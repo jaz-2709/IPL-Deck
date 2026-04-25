@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPL Deck — The Fan Intelligence Dashboard</title>
+  <meta name="description" content="IPL Deck: Stats, Live Scores, Rivalries, Squads and Records for every IPL season." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       IPL DECK — DESIGN SYSTEM
+       Aesthetic: Bright/Energetic + Newspaper-Editorial
+       Primary: Deep navy | Accent: IPL Gold + Cricket Green
+    ============================================================ */
+
+    :root {
+      /* Core palette */
+      --clr-bg:          #08090D;
+      --clr-surface:     #0F111A;
+      --clr-surface-2:   #171A26;
+      --clr-surface-3:   #1E2133;
+      --clr-border:      rgba(255,255,255,0.07);
+      --clr-border-mid:  rgba(255,255,255,0.13);
+
+      /* Accent colours */
+      --clr-gold:        #F5A623;
+      --clr-gold-dim:    rgba(245,166,35,0.12);
+      --clr-green:       #00C27A;
+      --clr-green-dim:   rgba(0,194,122,0.10);
+      --clr-red:         #FF4757;
+      --clr-red-dim:     rgba(255,71,87,0.12);
+      --clr-blue:        #4E9BFF;
+      --clr-blue-dim:    rgba(78,155,255,0.10);
+      --clr-purple:      #A78BFA;
+      --clr-orange:      #FF6B35;
+
+      /* Text */
+      --clr-text:        #F0EDE8;
+      --clr-text-mid:    rgba(240,237,232,0.65);
+      --clr-text-dim:    rgba(240,237,232,0.35);
+
+      /* Typography */
+      --font-display:    'Bebas Neue', sans-serif;
+      --font-serif:      'DM Serif Display', serif;
+      --font-body:       'Manrope', sans-serif;
+      --font-mono:       'IBM Plex Mono', monospace;
+
+      /* Spacing */
+      --sp-xs:  4px;
+      --sp-sm:  8px;
+      --sp-md:  16px;
+      --sp-lg:  24px;
+      --sp-xl:  40px;
+
+      /* Radius */
+      --r-sm:  6px;
+      --r-md:  10px;
+      --r-lg:  16px;
+
+      /* Transition */
+      --ease:  cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ── Reset ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--clr-bg);
+      color: var(--clr-text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Background grain/texture ───────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Utility ─────────────────────────────────────────── */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 var(--sp-lg);
+    }
+    .badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+    .badge-gold   { background: var(--clr-gold-dim);  color: var(--clr-gold); }
+    .badge-green  { background: var(--clr-green-dim); color: var(--clr-green); }
+    .badge-red    { background: var(--clr-red-dim);   color: var(--clr-red); }
+    .badge-blue   { background: var(--clr-blue-dim);  color: var(--clr-blue); }
+    .badge-live   { background: var(--clr-red-dim);   color: var(--clr-red); animation: pulse-live 1.5s infinite; }
+
+    @keyframes pulse-live {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.55; }
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--clr-border);
+      margin: var(--sp-lg) 0;
+    }
+
+    /* ── Top banner ──────────────────────────────────────── */
+    #top-banner {
+      background: var(--clr-gold);
+      color: #000;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-align: center;
+      padding: 6px var(--sp-lg);
+    }
+
+    /* ── Header ──────────────────────────────────────────── */
+    #site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8,9,13,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--clr-border);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-lg);
+      padding: 12px 0;
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .logo-word {
+      font-family: var(--font-display);
+      font-size: 36px;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      color: var(--clr-text);
+    }
+    .logo-word span {
+      color: var(--clr-gold);
+    }
+    .logo-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--clr-text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      align-self: center;
+    }
+
+    /* Season indicator */
+    .season-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border-mid);
+      border-radius: 30px;
+      padding: 6px 14px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--clr-text-mid);
+    }
+    .season-dot {
+      width: 7px; height: 7px;
+      background: var(--clr-green);
+      border-radius: 50%;
+      animation: pulse-live 1.5s infinite;
+    }
+
+    /* ── Main navigation ─────────────────────────────────── */
+    #main-nav {
+      background: var(--clr-surface);
+      border-bottom: 1px solid var(--clr-border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    #main-nav::-webkit-scrollbar { display: none; }
+
+    .nav-inner {
+      display: flex;
+      gap: 0;
+      white-space: nowrap;
+    }
+
+    .nav-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 13px 20px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--clr-text-dim);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s var(--ease);
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+    }
+    .nav-btn .nav-icon { font-size: 14px; }
+    .nav-btn:hover { color: var(--clr-text); }
+    .nav-btn.active {
+      color: var(--clr-gold);
+    }
+    .nav-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2.5px;
+      background: var(--clr-gold);
+      border-radius: 2px 2px 0 0;
+    }
+
+    /* ── Module panes ────────────────────────────────────── */
+    .module-pane {
+      display: none;
+      animation: fadeUp 0.35s var(--ease) both;
+    }
+    .module-pane.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Hero / Home ─────────────────────────────────────── */
+    #home-hero {
+      padding: var(--sp-xl) 0 var(--sp-lg);
+      border-bottom: 1px solid var(--clr-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-text {
+      position: absolute;
+      top: -10px;
+      right: -20px;
+      font-family: var(--font-display);
+      font-size: 220px;
+      color: rgba(245,166,35,0.04);
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--clr-gold);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(52px, 8vw, 100px);
+      line-height: 0.92;
+      letter-spacing: 0.01em;
+      color: var(--clr-text);
+      margin-bottom: var(--sp-md);
+    }
+    .hero-title .accent { color: var(--clr-gold); }
+    .hero-title .stroke {
+      -webkit-text-stroke: 1.5px var(--clr-text);
+      color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      color: var(--clr-text-mid);
+      max-width: 540px;
+      line-height: 1.65;
+      margin-bottom: var(--sp-lg);
+    }
+
+    .hero-stats-row {
+      display: flex;
+      gap: var(--sp-lg);
+      flex-wrap: wrap;
+      margin-top: var(--sp-lg);
+      padding-top: var(--sp-lg);
+      border-top: 1px solid var(--clr-border);
+    }
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .hero-stat-num {
+      font-family: var(--font-display);
+      font-size: 36px;
+      color: var(--clr-gold);
+      line-height: 1;
+    }
+    .hero-stat-lbl {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--clr-text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── Module section header ───────────────────────────── */
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--sp-md);
+      padding: var(--sp-lg) 0 var(--sp-md);
+      border-bottom: 1px solid var(--clr-border);
+      margin-bottom: var(--sp-lg);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 42px;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      color: var(--clr-text);
+    }
+    .section-title span { color: var(--clr-gold); }
+    .section-desc {
+      font-size: 13px;
+      color: var(--clr-text-dim);
+      font-family: var(--font-mono);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Card component ──────────────────────────────────── */
+    .card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--r-lg);
+      padding: var(--sp-lg);
+      transition: border-color 0.2s var(--ease);
+    }
+    .card:hover { border-color: var(--clr-border-mid); }
+    .card-title {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      color: var(--clr-text);
+      margin-bottom: 6px;
+    }
+    .card-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--clr-text-dim);
+      letter-spacing: 0.06em;
+      margin-bottom: var(--sp-md);
+    }
+
+    /* ── Grid layouts ────────────────────────────────────── */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-md); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-md); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-md); }
+
+    @media (max-width: 900px) {
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .hero-title { font-size: 52px; }
+    }
+
+    /* ── Coming soon placeholder ─────────────────────────── */
+    .coming-soon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 320px;
+      text-align: center;
+      gap: var(--sp-md);
+      border: 1.5px dashed var(--clr-border-mid);
+      border-radius: var(--r-lg);
+    }
+    .coming-soon-icon {
+      font-size: 48px;
+      opacity: 0.4;
+    }
+    .coming-soon-label {
+      font-family: var(--font-display);
+      font-size: 28px;
+      color: var(--clr-text-dim);
+      letter-spacing: 0.05em;
+    }
+    .coming-soon-sub {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--clr-text-dim);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Stat number display ─────────────────────────────── */
+    .stat-block {
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--r-md);
+      padding: var(--sp-md);
+    }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 40px;
+      color: var(--clr-gold);
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--clr-text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .stat-player {
+      font-size: 13px;
+      color: var(--clr-text-mid);
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    /* ── Ticket / editorial accent block ─────────────────── */
+    .editorial-block {
+      position: relative;
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--r-lg);
+      padding: var(--sp-lg);
+      overflow: hidden;
+    }
+    .editorial-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--clr-gold), var(--clr-orange), var(--clr-green));
+    }
+
+    /* ── Team colour tags ────────────────────────────────── */
+    .team-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 4px;
+    }
+    .team-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* Team colours */
+    .t-mi    { background: rgba(0,68,154,0.2);  color: #5BA4FF; }
+    .t-csk   { background: rgba(255,189,0,0.15); color: #FFD233; }
+    .t-rcb   { background: rgba(197,0,0,0.15);  color: #FF5252; }
+    .t-kkr   { background: rgba(58,0,93,0.3);   color: #C084FC; }
+    .t-srh   { background: rgba(255,90,0,0.15); color: #FF7A30; }
+    .t-dc    { background: rgba(0,62,133,0.2);  color: #4FA8FF; }
+    .t-pbks  { background: rgba(190,0,0,0.15);  color: #FF4444; }
+    .t-rr    { background: rgba(114,0,178,0.2); color: #DA8FFF; }
+    .t-lsg   { background: rgba(0,40,104,0.2);  color: #7BB8FF; }
+    .t-gt    { background: rgba(0,34,60,0.2);   color: #4DC4FF; }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    #site-footer {
+      margin-top: var(--sp-xl);
+      border-top: 1px solid var(--clr-border);
+      padding: var(--sp-lg) 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-md);
+      flex-wrap: wrap;
+    }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--clr-text-dim);
+      letter-spacing: 0.05em;
+    }
+    .footer-logo span { color: var(--clr-gold); }
+    .footer-note {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--clr-text-dim);
+      letter-spacing: 0.06em;
+      text-align: right;
+      line-height: 1.7;
+    }
+
+    /* ── Scrollbar styling ───────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--clr-bg); }
+    ::-webkit-scrollbar-thumb { background: var(--clr-surface-3); border-radius: 3px; }
+
+    /* ── Selection ───────────────────────────────────────── */
+    ::selection { background: rgba(245,166,35,0.25); color: var(--clr-text); }
+
+    /* ── HOME MODULE specific ────────────────────────────── */
+    .quick-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--sp-md);
+      margin-top: var(--sp-lg);
+    }
+    @media (max-width: 900px) { .quick-nav-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .quick-nav-grid { grid-template-columns: 1fr 1fr; } }
+
+    .qnav-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--r-lg);
+      padding: var(--sp-lg) var(--sp-md);
+      cursor: pointer;
+      transition: all 0.22s var(--ease);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .qnav-card:hover {
+      border-color: var(--clr-gold);
+      background: var(--clr-gold-dim);
+      transform: translateY(-2px);
+    }
+    .qnav-icon { font-size: 28px; }
+    .qnav-label {
+      font-family: var(--font-display);
+      font-size: 16px;
+      letter-spacing: 0.04em;
+      color: var(--clr-text);
+    }
+    .qnav-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--clr-text-dim);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Live ticker strip ───────────────────────────────── */
+    .live-ticker {
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--r-md);
+      padding: 10px var(--sp-md);
+      display: flex;
+      align-items: center;
+      gap: var(--sp-md);
+      margin-top: var(--sp-lg);
+      overflow: hidden;
+    }
+    .ticker-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--clr-red);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .ticker-text {
+      font-size: 13px;
+      color: var(--clr-text-mid);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    /* ── Points table mini ───────────────────────────────── */
+    .points-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .points-table th {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--clr-text-dim);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .points-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--clr-border);
+      color: var(--clr-text-mid);
+    }
+    .points-table tr:last-child td { border-bottom: none; }
+    .points-table tr:hover td { background: var(--clr-surface-2); }
+    .points-table .pts-num {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      color: var(--clr-gold);
+    }
+    .points-table .team-name {
+      font-weight: 600;
+      color: var(--clr-text);
+    }
+    .form-dot {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 18px;
+      text-align: center;
+      margin: 0 1px;
+    }
+    .form-w { background: var(--clr-green-dim); color: var(--clr-green); }
+    .form-l { background: var(--clr-red-dim);   color: var(--clr-red); }
+    .form-nr { background: var(--clr-surface-3); color: var(--clr-text-dim); }
+
+    /* ── Stat Lab filter bar ─────────────────────────────── */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: var(--sp-lg);
+    }
+    .filter-btn {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--clr-text-dim);
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border);
+      border-radius: 20px;
+      padding: 5px 14px;
+      cursor: pointer;
+      transition: all 0.18s var(--ease);
+    }
+    .filter-btn:hover { color: var(--clr-text); border-color: var(--clr-border-mid); }
+    .filter-btn.on {
+      background: var(--clr-gold-dim);
+      border-color: var(--clr-gold);
+      color: var(--clr-gold);
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Top banner -->
+  <div id="top-banner">
+    IPL DECK &nbsp;·&nbsp; IPL 2026 · SEASON 19 &nbsp;·&nbsp; ALL DATA IS 100% LOCAL — NOTHING LEAVES YOUR DEVICE
+  </div>
+
+  <!-- ══ HEADER ══════════════════════════════════════════════ -->
+  <header id="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a class="logo" onclick="switchModule('home')">
+          <span class="logo-word">IPL<span> DECK</span></span>
+          <span class="logo-tag">Fan Intelligence</span>
+        </a>
+
+        <div class="season-pill">
+          <span class="season-dot"></span>
+          IPL 2026 &nbsp;·&nbsp; SEASON 19 &nbsp;·&nbsp; LIVE
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ MAIN NAVIGATION ═════════════════════════════════════ -->
+  <nav id="main-nav">
+    <div class="container">
+      <div class="nav-inner">
+        <button class="nav-btn active" data-module="home">
+          <span class="nav-icon">🏏</span> Home
+        </button>
+        <button class="nav-btn" data-module="live">
+          <span class="nav-icon">📡</span> Live Hub
+        </button>
+        <button class="nav-btn" data-module="stats">
+          <span class="nav-icon">📊</span> Stat Lab
+        </button>
+        <button class="nav-btn" data-module="teams">
+          <span class="nav-icon">⚔️</span> War Room
+        </button>
+        <button class="nav-btn" data-module="rivalry">
+          <span class="nav-icon">🔥</span> Rivalry Arena
+        </button>
+        <button class="nav-btn" data-module="vault">
+          <span class="nav-icon">🗄️</span> Time Vault
+        </button>
+        <button class="nav-btn" data-module="match">
+          <span class="nav-icon">🎯</span> Match Center
+        </button>
+        <button class="nav-btn" data-module="squad">
+          <span class="nav-icon">👥</span> Squad Room
+        </button>
+        <button class="nav-btn" data-module="facts">
+          <span class="nav-icon">💡</span> IPL Facts
+        </button>
+        <button class="nav-btn" data-module="share">
+          <span class="nav-icon">🖼️</span> Stat Cards
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══ MODULE: HOME ════════════════════════════════════════ -->
+  <div class="module-pane active" id="module-home">
+    <div class="container">
+
+      <!-- Hero -->
+      <section id="home-hero">
+        <div class="hero-bg-text">IPL</div>
+        <p class="hero-eyebrow">Season 19 · IPL 2026</p>
+        <h1 class="hero-title">
+          THE <span class="accent">FAN'S</span><br>
+          <span class="stroke">INTELLIGENCE</span><br>
+          DASHBOARD
+        </h1>
+        <p class="hero-sub">
+          Ball-by-ball stats, live scores, 19 seasons of records, squad intel,
+          head-to-head battles and more — all in one place. 100% free. Nothing leaves your browser.
+        </p>
+        <div class="filter-bar">
+          <span class="badge badge-green">✓ Free forever</span>
+          <span class="badge badge-gold">✓ All 19 IPL seasons</span>
+          <span class="badge badge-blue">✓ Live scores</span>
+          <span class="badge badge-live">⬤ Live now</span>
+        </div>
+
+        <div class="hero-stats-row">
+          <div class="hero-stat">
+            <span class="hero-stat-num">19</span>
+            <span class="hero-stat-lbl">Seasons Archived</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">10</span>
+            <span class="hero-stat-lbl">Active Franchises</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">1000+</span>
+            <span class="hero-stat-lbl">IPL Matches</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">500+</span>
+            <span class="hero-stat-lbl">Players Tracked</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">30+</span>
+            <span class="hero-stat-lbl">Stadiums</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live ticker -->
+      <div class="live-ticker" style="margin-top: 24px;">
+        <span class="ticker-label">⬤ Live</span>
+        <span class="ticker-text" id="live-ticker-text">Loading live scores…</span>
+      </div>
+
+      <!-- Quick navigation cards -->
+      <div style="margin-top: var(--sp-lg);">
+        <p style="font-family: var(--font-mono); font-size: 10px; color: var(--clr-text-dim); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px;">Quick Navigation</p>
+        <div class="quick-nav-grid">
+          <div class="qnav-card" onclick="switchModule('live')">
+            <span class="qnav-icon">📡</span>
+            <span class="qnav-label">LIVE HUB</span>
+            <span class="qnav-sub">Scores & fixtures</span>
+          </div>
+          <div class="qnav-card" onclick="switchModule('stats')">
+            <span class="qnav-icon">📊</span>
+            <span class="qnav-label">STAT LAB</span>
+            <span class="qnav-sub">All batting & bowling records</span>
+          </div>
+          <div class="qnav-card" onclick="switchModule('teams')">
+            <span class="qnav-icon">⚔️</span>
+            <span class="qnav-label">WAR ROOM</span>
+            <span class="qnav-sub">Team analytics & venues</span>
+          </div>
+          <div class="qnav-card" onclick="switchModule('rivalry')">
+            <span class="qnav-icon">🔥</span>
+            <span class="qnav-label">RIVALRY</span>
+            <span class="qnav-sub">H2H matchups & player battles</span>
+          </div>
+          <div class="qnav-card" onclick="switchModule('vault')">
+            <span class="qnav-icon">🗄️</span>
+            <span class="qnav-label">TIME VAULT</span>
+            <span class="qnav-sub">All 19 seasons archived</span>
+          </div>
+          <div class="qnav-card" onclick="switchModule('match')">
+            <span class="qnav-icon">🎯</span>
+            <span class="qnav-label">MATCH CENTER</span>
+            <span class="qnav-sub">Live scorecard & charts</span>
+          </div>
+          <div class="qnav-card" onclick="switchModule('squad')">
+            <span class="qnav-icon">👥</span>
+            <span class="qnav-label">SQUAD ROOM</span>
+            <span class="qnav-sub">Squads, injuries & replacements</span>
+          </div>
+          <div class="qnav-card" onclick="switchModule('facts')">
+            <span class="qnav-icon">💡</span>
+            <span class="qnav-label">IPL FACTS</span>
+            <span class="qnav-sub">Trivia, firsts & milestones</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Points table mini preview -->
+      <div style="margin-top: var(--sp-xl);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-md);">
+          <p style="font-family: var(--font-serif); font-size: 22px;">IPL 2026 Points Table</p>
+          <span class="badge badge-gold" style="cursor:pointer" onclick="switchModule('live')">View full table →</span>
+        </div>
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <table class="points-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Team</th>
+                <th>M</th>
+                <th>W</th>
+                <th>L</th>
+                <th>NRR</th>
+                <th>Pts</th>
+                <th>Form</th>
+              </tr>
+            </thead>
+            <tbody id="points-table-body">
+              <!-- Populated by JS below (static sample until live data is wired) -->
+              <tr>
+                <td style="color:var(--clr-text-dim)">1</td>
+                <td class="team-name"><span class="team-tag t-mi">MI</span> Mumbai Indians</td>
+                <td>8</td><td>6</td><td>2</td>
+                <td style="color:var(--clr-green)">+0.82</td>
+                <td class="pts-num">12</td>
+                <td>
+                  <span class="form-dot form-w">W</span>
+                  <span class="form-dot form-w">W</span>
+                  <span class="form-dot form-l">L</span>
+                  <span class="form-dot form-w">W</span>
+                  <span class="form-dot form-w">W</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="color:var(--clr-text-dim)">2</td>
+                <td class="team-name"><span class="team-tag t-csk">CSK</span> Chennai Super Kings</td>
+                <td>8</td><td>5</td><td>3</td>
+                <td style="color:var(--clr-green)">+0.43</td>
+                <td class="pts-num">10</td>
+                <td>
+                  <span class="form-dot form-w">W</span>
+                  <span class="form-dot form-l">L</span>
+                  <span class="form-dot form-w">W</span>
+                  <span class="form-dot form-w">W</span>
+                  <span class="form-dot form-l">L</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="color:var(--clr-text-dim)">3</td>
+                <td class="team-name"><span class="team-tag t-rcb">RCB</span> Royal Challengers Bengaluru</td>
+                <td>8</td><td>5</td><td>3</td>
+                <td style="color:var(--clr-red)">-0.11</td>
+                <td class="pts-num">10</td>
+                <td>
+                  <span class="form-dot form-l">L</span>
+                  <span class="form-dot form-w">W</span>
+                  <span class="form-dot form-w">W</span>
+                  <span class="form-dot form-l">L</span>
+                  <span class="form-dot form-w">W</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="color:var(--clr-text-dim)">4</td>
+                <td class="team-name"><span class="team-tag t-kkr">KKR</span> Kolkata Knight Riders</td>
+                <td>8</td><td>4</td><td>4</td>
+                <td style="color:var(--clr-green)">+0.21</td>
+                <td class="pts-num">8</td>
+                <td>
+                  <span class="form-dot form-w">W</span>
+                  <span class="form-dot form-l">L</span>
+                  <span class="form-dot form-l">L</span>
+                  <span class="form-dot form-w">W</span>
+                  <span class="form-dot form-w">W</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="color:var(--clr-text-dim)">5</td>
+                <td class="team-name"><span class="team-tag t-srh">SRH</span> Sunrisers Hyderabad</td>
+                <td>8</td><td>4</td><td>4</td>
+                <td style="color:var(--clr-red)">-0.09</td>
+                <td class="pts-num">8</td>
+                <td>
+                  <span class="form-dot form-l">L</span>
+                  <span class="form-dot form-w">W</span>
+                  <span class="form-dot form-l">L</span>
+                  <span class="form-dot form-w">W</span>
+                  <span class="form-dot form-l">L</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-family:var(--font-mono);font-size:10px;color:var(--clr-text-dim);margin-top:8px;letter-spacing:0.04em;">
+          * Sample data shown. Live data loads once your CricketData.org API key is configured in Settings.
+        </p>
+      </div>
+
+    </div><!-- /container -->
+  </div><!-- /module-home -->
+
+
+  <!-- ══ MODULE: LIVE HUB ════════════════════════════════════ -->
+  <div class="module-pane" id="module-live">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">LIVE <span>HUB</span></h2>
+          <p class="section-desc">Real-time scores · Fixtures · Points Table · NRR Calculator · Weather</p>
+        </div>
+        <span class="badge badge-live">⬤ Live</span>
+      </div>
+      <div class="coming-soon">
+        <span class="coming-soon-icon">📡</span>
+        <span class="coming-soon-label">LIVE HUB — COMING NEXT</span>
+        <span class="coming-soon-sub">Step 2 of the build — live scores, fixture calendar, NRR calculator & weather</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODULE: STAT LAB ════════════════════════════════════ -->
+  <div class="module-pane" id="module-stats">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">STAT <span>LAB</span></h2>
+          <p class="section-desc">Batting · Bowling · Fielding · Partnerships · Keeping · Match & Team Records</p>
+        </div>
+        <span class="badge badge-gold">All 19 Seasons</span>
+      </div>
+      <div class="coming-soon">
+        <span class="coming-soon-icon">📊</span>
+        <span class="coming-soon-label">STAT LAB — STEP 3</span>
+        <span class="coming-soon-sub">Orange Cap · Purple Cap · All records across every category and every season</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODULE: WAR ROOM ════════════════════════════════════ -->
+  <div class="module-pane" id="module-teams">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">TEAM <span>WAR ROOM</span></h2>
+          <p class="section-desc">Win patterns · Venue records · Form heatmap · Stadium win-ratios</p>
+        </div>
+        <span class="badge badge-blue">10 Teams</span>
+      </div>
+      <div class="coming-soon">
+        <span class="coming-soon-icon">⚔️</span>
+        <span class="coming-soon-label">WAR ROOM — STEP 5</span>
+        <span class="coming-soon-sub">Team analytics, venue intelligence and franchise deep dives</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODULE: RIVALRY ARENA ══════════════════════════════ -->
+  <div class="module-pane" id="module-rivalry">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">RIVALRY <span>ARENA</span></h2>
+          <p class="section-desc">Team H2H · Player vs Player matchups · Clash Cards</p>
+        </div>
+        <span class="badge badge-live">🔥 El Clásico of IPL</span>
+      </div>
+      <div class="coming-soon">
+        <span class="coming-soon-icon">🔥</span>
+        <span class="coming-soon-label">RIVALRY ARENA — STEP 6</span>
+        <span class="coming-soon-sub">Head-to-head team battles and batter vs bowler matchups</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODULE: TIME VAULT ══════════════════════════════════ -->
+  <div class="module-pane" id="module-vault">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">TIME <span>VAULT</span></h2>
+          <p class="section-desc">All 19 IPL seasons archived · Finals · Records by season</p>
+        </div>
+        <span class="badge badge-gold">2008 – 2026</span>
+      </div>
+      <div class="coming-soon">
+        <span class="coming-soon-icon">🗄️</span>
+        <span class="coming-soon-label">TIME VAULT — STEP 7</span>
+        <span class="coming-soon-sub">Season-by-season archive with champions, records and top performers</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODULE: MATCH CENTER ════════════════════════════════ -->
+  <div class="module-pane" id="module-match">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">MATCH <span>CENTER</span></h2>
+          <p class="section-desc">Live scorecard · Over timeline · Worm chart · Win probability</p>
+        </div>
+        <span class="badge badge-live">⬤ Live</span>
+      </div>
+      <div class="coming-soon">
+        <span class="coming-soon-icon">🎯</span>
+        <span class="coming-soon-label">MATCH CENTER — STEP 8</span>
+        <span class="coming-soon-sub">Ball-by-ball live scorecard, over chart and win probability graph</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODULE: SQUAD ROOM ══════════════════════════════════ -->
+  <div class="module-pane" id="module-squad">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">SQUAD <span>ROOM</span></h2>
+          <p class="section-desc">All 10 franchises · Full squads · Injuries · Replacements</p>
+        </div>
+        <span class="badge badge-green">Updated Daily</span>
+      </div>
+      <div class="coming-soon">
+        <span class="coming-soon-icon">👥</span>
+        <span class="coming-soon-label">SQUAD ROOM — STEP 4</span>
+        <span class="coming-soon-sub">Full rosters, injured players, replacements and auction data for all 10 teams</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODULE: IPL FACTS ═══════════════════════════════════ -->
+  <div class="module-pane" id="module-facts">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">IPL <span>FACTS</span></h2>
+          <p class="section-desc">Quirky records · Firsts · Milestones · Daily Did You Know</p>
+        </div>
+        <span class="badge badge-blue">Refreshes Daily</span>
+      </div>
+      <div class="coming-soon">
+        <span class="coming-soon-icon">💡</span>
+        <span class="coming-soon-label">IPL FACTS — STEP 9</span>
+        <span class="coming-soon-sub">Super Overs, last-ball finishes, IPL firsts and daily trivia cards</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODULE: STAT CARDS ══════════════════════════════════ -->
+  <div class="module-pane" id="module-share">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">STAT <span>CARDS</span></h2>
+          <p class="section-desc">Generate & download shareable infographic cards — free, no signup</p>
+        </div>
+        <span class="badge badge-gold">1080×1080 PNG</span>
+      </div>
+      <div class="coming-soon">
+        <span class="coming-soon-icon">🖼️</span>
+        <span class="coming-soon-label">STAT CARDS — STEP 10</span>
+        <span class="coming-soon-sub">Player cards, clash cards, season recap cards — downloadable PNG, no login needed</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FOOTER ══════════════════════════════════════════════ -->
+  <footer id="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-logo">IPL <span>DECK</span></span>
+        <p class="footer-note">
+          Data: Cricsheet.org · CricketData.org · Open-Meteo<br>
+          Built with HTML · CSS · Vanilla JS · Chart.js · Hosted on GitHub Pages<br>
+          © 2026 IPL Deck · Not affiliated with BCCI or IPL
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══ JAVASCRIPT ══════════════════════════════════════════ -->
+  <script>
+    /* ── Module switching ──────────────────────────────── */
+    const navBtns  = document.querySelectorAll('.nav-btn');
+    const panes    = document.querySelectorAll('.module-pane');
+
+    function switchModule(moduleId) {
+      navBtns.forEach(b => b.classList.toggle('active', b.dataset.module === moduleId));
+      panes.forEach(p  => p.classList.toggle('active', p.id === 'module-' + moduleId));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => switchModule(btn.dataset.module));
+    });
+
+    /* ── Live ticker (placeholder, will wire to API in Step 2) */
+    const tickerMsgs = [
+      'IPL 2026 · Season 19 is underway — 74 matches across 10 franchises',
+      'Live data will appear here once your CricketData.org API key is configured',
+      'Navigate to any module above to explore stats, squads and rivalries',
+    ];
+    let tickerIdx = 0;
+    const tickerEl = document.getElementById('live-ticker-text');
+    function rotateTicker() {
+      if (!tickerEl) return;
+      tickerEl.style.opacity = '0';
+      setTimeout(() => {
+        tickerIdx = (tickerIdx + 1) % tickerMsgs.length;
+        tickerEl.textContent = tickerMsgs[tickerIdx];
+        tickerEl.style.transition = 'opacity 0.5s';
+        tickerEl.style.opacity = '1';
+      }, 400);
+    }
+    setInterval(rotateTicker, 4000);
+
+    /* ── LocalStorage: remember last active module ──────── */
+    const saved = localStorage.getItem('ipl-deck-module');
+    if (saved) switchModule(saved);
+
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        localStorage.setItem('ipl-deck-module', btn.dataset.module);
+      });
+    });
+  </script>
+
+</body>
+</html>
