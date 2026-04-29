@@ -2325,12 +2325,19 @@ function buildCharts(){
   );
 }
 
-/* ── Cricsheet data loader ────────────────── */
-const REPO='https://raw.githubusercontent.com/jaz-2709/IPL-Deck/main/data/matches/';
-const FIRST_ID=1082591;
-const TOTAL=1209;
-let loadedMatches=[];
+/* ── Safe number formatting (prevents toFixed crash) ─ */
+function sf(val,dec){
+  const n=typeof val==='string'?parseFloat(val):Number(val);
+  return isNaN(n)?'—':n.toFixed(dec);
+}
+
+/* ── Data loader ─────────────────────────────────────
+   Strategy 1: Fetch pre-computed data/stats.json (fastest)
+   Strategy 2: Fetch via GitHub API tree + raw files
+   Strategy 3: Use embedded sample data
+─────────────────────────────────────────────────── */
 let isLoading=false;
+const RAW_BASE='https://raw.githubusercontent.com/jaz-2709/IPL-Deck/main/';
 
 async function loadCricsheetData(){
   if(isLoading)return;
@@ -2341,83 +2348,87 @@ async function loadCricsheetData(){
   const bar=document.getElementById('dp-bar');
   const cnt=document.getElementById('dp-count');
   const txt=document.getElementById('dp-text');
+  const setBar=(p)=>{bar.style.width=p+'%';};
 
+  /* ── Strategy 1: Pre-computed stats.json ── */
   try{
-    // Use Git Trees API — returns ALL files in repo at once, no pagination issues
-    txt.textContent='Connecting to GitHub…';
+    txt.textContent='Checking for pre-computed stats…';
+    const r=await fetch(RAW_BASE+'data/stats.json?t='+Date.now());
+    if(r.ok){
+      const data=await r.json();
+      if(data&&data.runs&&data.runs.length>0){
+        // Merge with sample data for categories not in stats.json
+        const merged={...STAT_DATA,...data};
+        populateTables(merged);
+        chartsBuilt=false;buildCharts();
+        setBar(100);
+        cnt.textContent='✓ Pre-computed';
+        txt.textContent='✓ Real IPL stats loaded from stats.json · 2008–2026';
+        btn.textContent='✓ DATA LOADED';
+        btn.style.background='var(--green)';btn.style.color='#000';
+        try{localStorage.setItem('ipl-deck-stats',JSON.stringify(merged))}catch(e){}
+        isLoading=false;return;
+      }
+    }
+  }catch(e){console.log('stats.json not found, trying API...');}
+
+  /* ── Strategy 2: GitHub Tree API then raw fetch ── */
+  try{
+    txt.textContent='Fetching file list from GitHub…';
+    // Try direct API first, then CORS proxy fallback
+    let treeData=null;
     const treeUrl='https://api.github.com/repos/jaz-2709/IPL-Deck/git/trees/main?recursive=1';
-    const treeResp=await fetch(treeUrl,{headers:{'Accept':'application/vnd.github.v3+json'}});
+    const proxyUrl='https://api.allorigins.win/raw?url='+encodeURIComponent(treeUrl);
 
-    if(!treeResp.ok){
-      // Fallback: try without auth header
-      throw new Error('GitHub API returned '+treeResp.status);
+    for(const url of [treeUrl,proxyUrl]){
+      try{
+        const r=await fetch(url,{signal:AbortSignal.timeout(10000)});
+        if(r.ok){const d=await r.json();if(d.tree){treeData=d;break;}}
+      }catch(e){continue;}
     }
 
-    const treeData=await treeResp.json();
+    if(!treeData||!treeData.tree)throw new Error('Cannot get file list from GitHub');
 
-    if(!treeData.tree||!Array.isArray(treeData.tree)){
-      throw new Error('Unexpected API response format');
-    }
+    const files=treeData.tree.filter(f=>f.type==='blob'&&f.path.startsWith('data/matches/')&&f.path.endsWith('.json'));
+    if(files.length===0)throw new Error('No match files found in data/matches/');
 
-    // Filter only data/matches/*.json files
-    const matchFiles=treeData.tree.filter(f=>
-      f.type==='blob' &&
-      f.path.startsWith('data/matches/') &&
-      f.path.endsWith('.json')
-    );
-
-    if(matchFiles.length===0){
-      throw new Error('No match files found in data/matches/ — check upload');
-    }
-
-    const total=matchFiles.length;
-    txt.textContent='Found '+total+' match files · Loading stats…';
+    const total=files.length;
+    txt.textContent='Found '+total+' match files · Processing…';
     cnt.textContent='0 / '+total;
 
     let loaded=0;
-    let allStats={
-      runs:{},sixes:{},wickets:{},catches:{},stumpings:{},
-      partnerships:[],totals:[],innings:{}
-    };
+    const allStats={runs:{},wickets:{},fielding:{},keeping:{}};
+    const BATCH=20;
 
-    // Fetch in batches of 25 for reliability
-    const BATCH=25;
-    const BASE='https://raw.githubusercontent.com/jaz-2709/IPL-Deck/main/';
-
-    for(let i=0;i<matchFiles.length;i+=BATCH){
-      const batch=matchFiles.slice(i,i+BATCH);
+    for(let i=0;i<files.length;i+=BATCH){
+      const batch=files.slice(i,i+BATCH);
       await Promise.all(batch.map(async f=>{
         try{
-          const r=await fetch(BASE+f.path);
+          const r=await fetch(RAW_BASE+f.path,{signal:AbortSignal.timeout(8000)});
           if(!r.ok)return;
-          const data=await r.json();
-          processCricsheet(data,allStats);
+          processCricsheet(await r.json(),allStats);
+        }catch(e){}finally{
           loaded++;
-          const pct=Math.round((loaded/total)*100);
-          bar.style.width=pct+'%';
-          cnt.textContent=loaded+' / '+total;
-          if(loaded%50===0)txt.textContent='Processing… '+pct+'% done — '+loaded+' matches loaded';
-        }catch(e){}
+          const p=Math.round((loaded/total)*100);
+          setBar(p);cnt.textContent=loaded+' / '+total;
+          if(loaded%100===0)txt.textContent='Processing '+p+'% — '+loaded+'/'+total+' matches';
+        }
       }));
     }
 
-    const displayData=convertStats(allStats);
-    populateTables(displayData);
-    chartsBuilt=false;
-    buildCharts();
-    txt.textContent='✓ All '+loaded+' matches loaded · Showing real IPL data 2008–2026';
-    btn.textContent='✓ REAL DATA LOADED';
-    btn.style.background='var(--green)';
-    btn.style.color='#000';
-    // Save loaded flag
-    try{localStorage.setItem('ipl-deck-data-loaded','1')}catch(e){}
+    const display=convertStats(allStats);
+    populateTables(display);
+    chartsBuilt=false;buildCharts();
+    txt.textContent='✓ '+loaded+' matches processed · Real IPL data 2008–2026';
+    btn.textContent='✓ DATA LOADED';
+    btn.style.background='var(--green)';btn.style.color='#000';
+    isLoading=false;return;
 
   }catch(err){
-    console.error('Data load error:',err);
-    txt.textContent='⚠ '+err.message+' · Sample data is shown below';
-    btn.disabled=false;
-    btn.textContent='⚡ RETRY';
-    btn.style.background='var(--orange)';
+    console.error('Fetch error:',err.message);
+    txt.textContent='⚠ '+err.message+' · Set up GitHub Action (instructions below)';
+    btn.disabled=false;btn.textContent='⚡ RETRY';
+    btn.style.background='var(--orange)';btn.style.color='#000';
     isLoading=false;
   }
 }
@@ -2463,24 +2474,32 @@ function processCricsheet(match,stats){
 }
 
 function convertStats(raw){
-  // Build display data from real cricsheet data
+  const toN=(v)=>typeof v==='string'?parseFloat(v)||0:Number(v)||0;
   const runsArr=Object.entries(raw.runs||{})
-    .map(([p,v])=>({player:p,team:v.team,runs:v.runs,balls:v.balls,fours:v.fours,sixes:v.sixes,inn:0,avg:0,sr:v.balls>0?((v.runs/v.balls)*100).toFixed(1):0,hundreds:0,fifties:0}))
-    .sort((a,b)=>b.runs-a.runs).slice(0,10)
+    .map(([p,v])=>({player:p,team:(v.teams||[v.team]).filter(Boolean).join('/'),
+      runs:v.runs||0,balls:v.balls||0,fours:v.fours||0,sixes:v.sixes||0,inn:v.innings||0,
+      avg:v.outs>0?parseFloat(((v.runs||0)/v.outs).toFixed(2)):v.runs||0,
+      sr:v.balls>0?parseFloat(((v.runs||0)/v.balls*100).toFixed(1)):0,
+      hundreds:v.hundreds||0,fifties:v.fifties||0}))
+    .filter(r=>r.runs>200).sort((a,b)=>b.runs-a.runs).slice(0,10)
     .map((r,i)=>({...r,rank:i+1}));
 
-  const sixesArr=Object.entries(raw.sixes||raw.runs||{})
-    .map(([p,v])=>({player:p,team:v.team,sixes:v.sixes||0,fours:v.fours||0,matches:0,bdryPct:0}))
-    .sort((a,b)=>b.sixes-a.sixes).slice(0,10)
+  const sixesArr=Object.entries(raw.runs||{})
+    .map(([p,v])=>({player:p,team:(v.teams||[v.team]).filter(Boolean).join('/'),
+      sixes:v.sixes||0,fours:v.fours||0,matches:v.matches||0,bdryPct:0}))
+    .filter(r=>r.sixes>0).sort((a,b)=>b.sixes-a.sixes).slice(0,10)
     .map((r,i)=>({...r,rank:i+1}));
 
   const wktsArr=Object.entries(raw.wickets||{})
-    .map(([p,v])=>({player:p,team:v.team,wkts:v.wkts||0,matches:0,avg:v.wkts>0?((v.runs||0)/v.wkts).toFixed(1):0,eco:v.balls>0?((v.runs||0)/(v.balls/6)).toFixed(2):0,sr:v.wkts>0?((v.balls||0)/v.wkts).toFixed(1):0,bbi:'—'}))
-    .sort((a,b)=>b.wkts-a.wkts).slice(0,10)
+    .map(([p,v])=>({player:p,team:(v.teams||[v.team]).filter(Boolean).join('/'),
+      wkts:v.wkts||0,matches:v.matches||0,runs:v.runs||0,balls:v.balls||0,
+      avg:v.wkts>0?parseFloat(((v.runs||0)/v.wkts).toFixed(1)):0,
+      eco:v.balls>0?parseFloat(((v.runs||0)/(v.balls/6)).toFixed(2)):0,
+      sr:v.wkts>0?parseFloat(((v.balls||0)/v.wkts).toFixed(1)):0,bbi:'—'}))
+    .filter(r=>r.wkts>5).sort((a,b)=>b.wkts-a.wkts).slice(0,10)
     .map((r,i)=>({...r,rank:i+1}));
 
-  // Merge real data on top of sample if we got good numbers
-  return {
+  return{
     runs:runsArr.length>=5?runsArr:STAT_DATA.runs,
     sixes:sixesArr.filter(s=>s.sixes>0).length>=5?sixesArr:STAT_DATA.sixes,
     avg:STAT_DATA.avg,sr:STAT_DATA.sr,hs:STAT_DATA.hs,
@@ -2492,8 +2511,7 @@ function convertStats(raw){
     keeping:STAT_DATA.keeping,stumpings:STAT_DATA.stumpings,
     highTotals:STAT_DATA.highTotals,lowTotals:STAT_DATA.lowTotals,
     margins:STAT_DATA.margins,extras:STAT_DATA.extras,
-    teams:STAT_DATA.teams,individuals:STAT_DATA.individuals,
-    stadiums:STAT_DATA.stadiums,
+    teams:STAT_DATA.teams,individuals:STAT_DATA.individuals,stadiums:STAT_DATA.stadiums,
   };
 }
 
