@@ -2206,6 +2206,8 @@ function buildStadiums(stads){
 
 /* ── Chart.js charts ─────────────────────── */
 let chartsBuilt=false;
+const chartInstances={};  // Track all Chart.js instances by canvas ID
+
 const CHART_DEFAULTS={
   color:'rgba(242,239,232,0.6)',
   gridColor:'rgba(255,255,255,0.05)',
@@ -2215,8 +2217,16 @@ const CHART_DEFAULTS={
 function makeChart(id,type,labels,datasets,options={}){
   const el=document.getElementById(id);
   if(!el)return;
+  // Destroy existing chart on this canvas if one exists
+  if(chartInstances[id]){
+    chartInstances[id].destroy();
+    delete chartInstances[id];
+  }
+  // Also check Chart.js registry as a safety net
+  const existing=Chart.getChart(id);
+  if(existing){existing.destroy();}
   const ctx=el.getContext('2d');
-  return new Chart(ctx,{type,data:{labels,datasets},options:{
+  const chart=new Chart(ctx,{type,data:{labels,datasets},options:{
     responsive:true,maintainAspectRatio:false,
     plugins:{legend:{labels:{color:CHART_DEFAULTS.color,font:CHART_DEFAULTS.font,boxWidth:12}},tooltip:{bodyFont:CHART_DEFAULTS.font,titleFont:CHART_DEFAULTS.font}},
     scales:type==='doughnut'||type==='pie'?{}:{
@@ -2225,11 +2235,12 @@ function makeChart(id,type,labels,datasets,options={}){
     },
     ...options,
   }});
+  chartInstances[id]=chart;
+  return chart;
 }
 
 function buildCharts(){
-  if(chartsBuilt)return;
-  chartsBuilt=true;
+  chartsBuilt=true;  // Mark as built FIRST so re-entries don't stack
   const d=STAT_DATA;
 
   // Runs bar
@@ -2360,7 +2371,7 @@ async function loadCricsheetData(){
         // Merge with sample data for categories not in stats.json
         const merged={...STAT_DATA,...data};
         populateTables(merged);
-        chartsBuilt=false;buildCharts();
+        buildCharts();
         setBar(100);
         cnt.textContent='✓ Pre-computed';
         txt.textContent='✓ Real IPL stats loaded from stats.json · 2008–2026';
@@ -2418,7 +2429,7 @@ async function loadCricsheetData(){
 
     const display=convertStats(allStats);
     populateTables(display);
-    chartsBuilt=false;buildCharts();
+    buildCharts();
     txt.textContent='✓ '+loaded+' matches processed · Real IPL data 2008–2026';
     btn.textContent='✓ DATA LOADED';
     btn.style.background='var(--green)';btn.style.color='#000';
