@@ -78,7 +78,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .hero-content{position:relative;z-index:2}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:11px;color:var(--orange);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:20px;opacity:0;animation:revealUp 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) forwards}
 .hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--orange)}
-.hero-title{font-family:var(--f-display);font-size:clamp(72px,12vw,160px);line-height:0.88;letter-spacing:0.01em;color:var(--t1);margin-bottom:24px;opacity:0;animation:revealUp 0.7s 0.2s cubic-bezier(0.16,1,0.3,1) forwards}
+.hero-title{font-family:var(--f-display);font-size:clamp(32px,8.5vw,160px);line-height:0.92;letter-spacing:0.01em;color:var(--t1);margin-bottom:24px;opacity:0;animation:revealUp 0.7s 0.2s cubic-bezier(0.16,1,0.3,1) forwards;word-break:break-word;overflow-wrap:break-word}
 .hero-title .stroke{-webkit-text-stroke:2px var(--t1);color:transparent}
 .hero-title .hl{color:var(--orange);position:relative;display:inline-block}
 .hero-title .hl::after{content:'';position:absolute;bottom:4px;left:0;right:0;height:6px;background:var(--orange);opacity:0.3;border-radius:2px}
@@ -713,7 +713,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 /* Responsive */
 @media(max-width:1100px){.stats-two-col{grid-template-columns:1fr}.stats-overview-grid{grid-template-columns:repeat(2,1fr)}.live-grid{grid-template-columns:1fr}.stadium-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:960px){.qnav-grid{grid-template-columns:repeat(2,1fr)};#pitch-bg{display:none}}
-@media(max-width:600px){.wrap{padding:0 16px}.qnav-grid{grid-template-columns:repeat(2,1fr)}.stats-overview-grid{grid-template-columns:1fr 1fr}.calc-grid{grid-template-columns:1fr}.phase-grid{grid-template-columns:1fr}.stadium-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.wrap{padding:0 16px}.qnav-grid{grid-template-columns:repeat(2,1fr)}.stats-overview-grid{grid-template-columns:1fr 1fr}.calc-grid{grid-template-columns:1fr}.phase-grid{grid-template-columns:1fr}.stadium-grid{grid-template-columns:1fr}.hero-title{font-size:clamp(32px,9vw,72px)!important;line-height:0.95!important}.hero-sub{font-size:14px}.hstat-n{font-size:34px}.hstat{padding:16px 20px 16px 0;margin-right:20px}.season-filter{overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap;padding-bottom:4px}.season-filter::-webkit-scrollbar{display:none}.sf-btn{flex-shrink:0}.cat-tabs{font-size:12px}.stats-two-col{grid-template-columns:1fr}.live-hub-title{font-size:42px!important}.mod-title{font-size:38px!important}}
 </style>
 </head>
 <body>
@@ -1034,9 +1034,19 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <button class="sf-btn" onclick="setSeason('2024',this)">2024</button>
       <button class="sf-btn" onclick="setSeason('2023',this)">2023</button>
       <button class="sf-btn" onclick="setSeason('2022',this)">2022</button>
+      <button class="sf-btn" onclick="setSeason('2021',this)">2021</button>
+      <button class="sf-btn" onclick="setSeason('2020',this)">2020</button>
       <button class="sf-btn" onclick="setSeason('2019',this)">2019</button>
+      <button class="sf-btn" onclick="setSeason('2018',this)">2018</button>
+      <button class="sf-btn" onclick="setSeason('2017',this)">2017</button>
       <button class="sf-btn" onclick="setSeason('2016',this)">2016</button>
+      <button class="sf-btn" onclick="setSeason('2015',this)">2015</button>
+      <button class="sf-btn" onclick="setSeason('2014',this)">2014</button>
       <button class="sf-btn" onclick="setSeason('2013',this)">2013</button>
+      <button class="sf-btn" onclick="setSeason('2012',this)">2012</button>
+      <button class="sf-btn" onclick="setSeason('2011',this)">2011</button>
+      <button class="sf-btn" onclick="setSeason('2010',this)">2010</button>
+      <button class="sf-btn" onclick="setSeason('2009',this)">2009</button>
       <button class="sf-btn" onclick="setSeason('2008',this)">2008</button>
     </div>
 
@@ -2332,52 +2342,82 @@ async function loadCricsheetData(){
   const cnt=document.getElementById('dp-count');
   const txt=document.getElementById('dp-text');
 
-  // First fetch the index of files from GitHub API
   try{
-    txt.textContent='Fetching file list from GitHub...';
-    const apiUrl=`https://api.github.com/repos/jaz-2709/IPL-Deck/contents/data/matches?per_page=1000`;
-    const resp=await fetch(apiUrl);
-    const files=await resp.json();
-    if(!Array.isArray(files)){throw new Error('Cannot read file list');}
+    // Use Git Trees API — returns ALL files in repo at once, no pagination issues
+    txt.textContent='Connecting to GitHub…';
+    const treeUrl='https://api.github.com/repos/jaz-2709/IPL-Deck/git/trees/main?recursive=1';
+    const treeResp=await fetch(treeUrl,{headers:{'Accept':'application/vnd.github.v3+json'}});
 
-    const jsonFiles=files.filter(f=>f.name.endsWith('.json'));
-    const total=jsonFiles.length;
-    txt.textContent=`Found ${total} match files · Loading...`;
+    if(!treeResp.ok){
+      // Fallback: try without auth header
+      throw new Error('GitHub API returned '+treeResp.status);
+    }
 
-    // Fetch in batches of 30
-    const BATCH=30;
+    const treeData=await treeResp.json();
+
+    if(!treeData.tree||!Array.isArray(treeData.tree)){
+      throw new Error('Unexpected API response format');
+    }
+
+    // Filter only data/matches/*.json files
+    const matchFiles=treeData.tree.filter(f=>
+      f.type==='blob' &&
+      f.path.startsWith('data/matches/') &&
+      f.path.endsWith('.json')
+    );
+
+    if(matchFiles.length===0){
+      throw new Error('No match files found in data/matches/ — check upload');
+    }
+
+    const total=matchFiles.length;
+    txt.textContent='Found '+total+' match files · Loading stats…';
+    cnt.textContent='0 / '+total;
+
     let loaded=0;
-    let allStats={runs:{},sixes:{},wickets:{},catches:{},stumpings:{},partnerships:[],totals:[]};
+    let allStats={
+      runs:{},sixes:{},wickets:{},catches:{},stumpings:{},
+      partnerships:[],totals:[],innings:{}
+    };
 
-    for(let i=0;i<jsonFiles.length;i+=BATCH){
-      const batch=jsonFiles.slice(i,i+BATCH);
+    // Fetch in batches of 25 for reliability
+    const BATCH=25;
+    const BASE='https://raw.githubusercontent.com/jaz-2709/IPL-Deck/main/';
+
+    for(let i=0;i<matchFiles.length;i+=BATCH){
+      const batch=matchFiles.slice(i,i+BATCH);
       await Promise.all(batch.map(async f=>{
         try{
-          const r=await fetch(f.download_url);
+          const r=await fetch(BASE+f.path);
+          if(!r.ok)return;
           const data=await r.json();
           processCricsheet(data,allStats);
           loaded++;
           const pct=Math.round((loaded/total)*100);
           bar.style.width=pct+'%';
           cnt.textContent=loaded+' / '+total;
+          if(loaded%50===0)txt.textContent='Processing… '+pct+'% done — '+loaded+' matches loaded';
         }catch(e){}
       }));
     }
 
-    // Convert to display format and update
     const displayData=convertStats(allStats);
     populateTables(displayData);
-    // Rebuild charts with real data
     chartsBuilt=false;
     buildCharts();
-    txt.textContent='✓ Loaded '+loaded+' matches · Showing real IPL data';
+    txt.textContent='✓ All '+loaded+' matches loaded · Showing real IPL data 2008–2026';
     btn.textContent='✓ REAL DATA LOADED';
     btn.style.background='var(--green)';
+    btn.style.color='#000';
+    // Save loaded flag
+    try{localStorage.setItem('ipl-deck-data-loaded','1')}catch(e){}
 
-  }catch(e){
-    txt.textContent='Could not load — check your GitHub repo has data/matches/ folder';
+  }catch(err){
+    console.error('Data load error:',err);
+    txt.textContent='⚠ '+err.message+' · Sample data is shown below';
     btn.disabled=false;
     btn.textContent='⚡ RETRY';
+    btn.style.background='var(--orange)';
     isLoading=false;
   }
 }
