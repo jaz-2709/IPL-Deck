@@ -8,11 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-/* ================================================================
-   IPL DECK v2 — STEP 2: LIVE HUB ADDED
-================================================================ */
 :root{
   --bg:#050608;--surface:#0A0B11;--surface2:#10121C;--surface3:#181B28;
   --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
@@ -25,12 +22,8 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--t1);font-family:var(--f-body);font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden;cursor:none}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.032;pointer-events:none;z-index:1}
-
-/* CURSOR */
 #cursor{position:fixed;width:18px;height:18px;border-radius:50%;background:var(--orange);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.08s,width 0.2s,height 0.2s;mix-blend-mode:exclusion}
 #cursor.big{width:46px;height:46px}
-
-/* UTIL */
 .wrap{max-width:1320px;margin:0 auto;padding:0 28px}
 ::selection{background:rgba(255,94,0,0.3);color:var(--t1)}
 ::-webkit-scrollbar{width:4px;height:4px}
@@ -103,8 +96,6 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .hstat-n{font-family:var(--f-display);font-size:48px;line-height:1;color:var(--orange);display:block}
 .hstat-l{font-family:var(--f-mono);font-size:9.5px;color:var(--t3);letter-spacing:0.14em;text-transform:uppercase;margin-top:4px;display:block}
 @keyframes revealUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
-/* Score bar */
 #score-bar{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 0}
 .score-bar-inner{display:flex;align-items:center;gap:20px;overflow-x:auto;scrollbar-width:none;white-space:nowrap}
 .score-bar-inner::-webkit-scrollbar{display:none}
@@ -115,9 +106,6 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .sc-over{font-family:var(--f-mono);font-size:10px;color:var(--t3)}
 .sc-live-tag{font-family:var(--f-mono);font-size:9px;font-weight:700;color:#000;background:var(--green);padding:2px 6px;border-radius:3px;letter-spacing:0.08em}
 .sc-upcoming-tag{font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.06em}
-.score-sep{font-family:var(--f-mono);font-size:10px;color:var(--t3);flex-shrink:0}
-
-/* Quick nav */
 #quick-nav-section{padding:56px 0 0}
 .section-label{font-family:var(--f-mono);font-size:10px;color:var(--t3);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px}
 .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border2),transparent)}
@@ -131,8 +119,6 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .qcard:hover .qcard-icon{background:var(--clr-a,rgba(255,94,0,0.15))}
 .qcard-title{font-family:var(--f-cond);font-size:16px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--t1);line-height:1}
 .qcard-sub{font-family:var(--f-mono);font-size:10px;color:var(--t3);letter-spacing:0.06em;line-height:1.5}
-
-/* Points table */
 #table-section{padding:48px 0 60px}
 .section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
 .section-title{font-family:var(--f-display);font-size:clamp(28px,5vw,42px);letter-spacing:0.02em;color:var(--t1);line-height:1}
@@ -163,43 +149,16 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .data-note::before{content:'ℹ';font-size:11px;color:var(--blue)}
 
 /* ================================================================
-   LIVE HUB MODULE — STEP 2
+   LIVE HUB STYLES
 ================================================================ */
-#pane-live{padding-bottom:60px}
-
-/* Live Hub top bar */
-.live-hub-header{
-  padding:36px 0 24px;
-  border-bottom:1px solid var(--border);
-  margin-bottom:28px;
-}
+.live-hub-header{padding:36px 0 24px;border-bottom:1px solid var(--border);margin-bottom:28px}
 .live-hub-top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .live-hub-title{font-family:var(--f-display);font-size:clamp(48px,8vw,80px);line-height:0.88;letter-spacing:0.02em;color:var(--t1)}
 .live-hub-title em{color:var(--orange);font-style:normal}
 .live-hub-desc{font-family:var(--f-mono);font-size:10px;color:var(--t3);letter-spacing:0.08em;text-align:right;line-height:1.8;max-width:220px}
-
-/* Settings button */
-.settings-btn{
-  display:inline-flex;align-items:center;gap:7px;
-  font-family:var(--f-mono);font-size:11px;font-weight:700;
-  letter-spacing:0.08em;color:var(--t2);
-  background:var(--surface2);border:1px solid var(--border2);
-  border-radius:8px;padding:8px 14px;cursor:pointer;
-  transition:all 0.2s;
-}
+.settings-btn{display:inline-flex;align-items:center;gap:7px;font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:0.08em;color:var(--t2);background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 14px;cursor:pointer;transition:all 0.2s}
 .settings-btn:hover{border-color:var(--orange);color:var(--orange)}
-
-/* Settings drawer */
-#settings-drawer{
-  position:fixed;top:0;right:-420px;
-  width:100%;max-width:400px;height:100vh;
-  background:var(--surface);
-  border-left:1px solid var(--border2);
-  z-index:500;
-  transition:right 0.35s cubic-bezier(0.16,1,0.3,1);
-  overflow-y:auto;
-  padding:28px;
-}
+#settings-drawer{position:fixed;top:0;right:-420px;width:100%;max-width:400px;height:100vh;background:var(--surface);border-left:1px solid var(--border2);z-index:500;transition:right 0.35s cubic-bezier(0.16,1,0.3,1);overflow-y:auto;padding:28px}
 #settings-drawer.open{right:0}
 #settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:499;display:none;backdrop-filter:blur(4px)}
 #settings-overlay.open{display:block}
@@ -218,14 +177,9 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .drawer-usage{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .usage-bar-wrap{height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;margin-bottom:4px}
 .usage-bar{height:100%;background:var(--green);border-radius:3px;transition:width 0.5s}
-
-/* Live grid layout */
 .live-grid{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
-@media(max-width:1000px){.live-grid{grid-template-columns:1fr}}
 .live-main{display:flex;flex-direction:column;gap:16px}
 .live-side{display:flex;flex-direction:column;gap:16px}
-
-/* Card base */
 .lcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 .lcard-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)}
 .lcard-title{font-family:var(--f-cond);font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--t2)}
@@ -236,12 +190,13 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .badge-upcoming{background:rgba(255,208,0,0.1);color:var(--gold)}
 @keyframes pulse-badge{0%,100%{opacity:1}50%{opacity:0.5}}
 .lcard-body{padding:18px}
-
-/* LIVE SCORECARD */
-.live-match-teams{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:10px;margin-bottom:16px;
-}
+.api-banner{background:rgba(255,94,0,0.06);border:1px solid rgba(255,94,0,0.2);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.api-banner-icon{font-size:20px;flex-shrink:0}
+.api-banner-text{flex:1}
+.api-banner-title{font-family:var(--f-cond);font-size:14px;font-weight:700;letter-spacing:0.04em;color:var(--orange);margin-bottom:2px}
+.api-banner-sub{font-family:var(--f-mono);font-size:10px;color:var(--t3);letter-spacing:0.04em}
+.api-banner-btn{font-family:var(--f-mono);font-size:10px;font-weight:700;letter-spacing:0.08em;color:#000;background:var(--orange);border:none;border-radius:6px;padding:7px 12px;cursor:pointer;flex-shrink:0;white-space:nowrap}
+.live-match-teams{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
 .lmt-team{display:flex;flex-direction:column;gap:3px;flex:1}
 .lmt-team.right{text-align:right;align-items:flex-end}
 .lmt-abbr{font-family:var(--f-display);font-size:28px;letter-spacing:0.04em;color:var(--t1)}
@@ -249,17 +204,10 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .lmt-score{font-family:var(--f-display);font-size:36px;color:var(--gold);line-height:1}
 .lmt-over{font-family:var(--f-mono);font-size:11px;color:var(--t2)}
 .lmt-vs{font-family:var(--f-display);font-size:18px;color:var(--t3)}
-
-.live-status-bar{
-  background:var(--surface2);border-radius:8px;padding:10px 14px;
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:16px;flex-wrap:wrap;gap:8px;
-}
+.live-status-bar{background:var(--surface2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
 .lsb-item{display:flex;flex-direction:column;gap:1px;text-align:center}
 .lsb-val{font-family:var(--f-display);font-size:20px;color:var(--orange);line-height:1}
 .lsb-lbl{font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.08em;text-transform:uppercase}
-
-/* Batters table */
 .live-table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:12.5px}
 .live-table th{font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;padding:6px 8px;text-align:left;border-bottom:1px solid var(--border)}
 .live-table td{padding:9px 8px;color:var(--t1);border-bottom:1px solid rgba(255,255,255,0.03)}
@@ -267,75 +215,13 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .live-table .mono{font-family:var(--f-mono);color:var(--t2);text-align:right}
 .live-table .on-strike{color:var(--orange);font-weight:600}
 .live-table .highlight-row td{background:rgba(255,94,0,0.04)}
-
-/* Last 6 balls */
 .last6{display:flex;align-items:center;gap:5px;margin-bottom:14px;flex-wrap:wrap}
 .last6-lbl{font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.1em;margin-right:4px}
-.ball{
-  width:30px;height:30px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--f-mono);font-size:11px;font-weight:700;
-  flex-shrink:0;
-}
-.ball-dot{background:var(--surface3);color:var(--t3)}
-.ball-1{background:rgba(79,195,247,0.12);color:var(--blue)}
-.ball-2{background:rgba(79,195,247,0.18);color:var(--blue)}
-.ball-4{background:rgba(255,208,0,0.15);color:var(--gold)}
-.ball-6{background:rgba(255,94,0,0.18);color:var(--orange)}
-.ball-w{background:rgba(255,61,87,0.18);color:var(--red)}
-.ball-nb{background:rgba(192,132,252,0.15);color:var(--purple)}
-
-/* Required rate info */
-.rrr-bar{
-  background:var(--surface2);border-radius:8px;padding:10px 14px;
-  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
-}
-.rrr-item{display:flex;flex-direction:column;gap:1px;flex:1;text-align:center}
-.rrr-val{font-family:var(--f-display);font-size:18px;color:var(--t1);line-height:1}
-.rrr-lbl{font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.06em}
-
-/* Fall of wickets */
+.ball{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:11px;font-weight:700;flex-shrink:0}
+.ball-dot{background:var(--surface3);color:var(--t3)}.ball-1{background:rgba(79,195,247,0.12);color:var(--blue)}.ball-2{background:rgba(79,195,247,0.18);color:var(--blue)}.ball-4{background:rgba(255,208,0,0.15);color:var(--gold)}.ball-6{background:rgba(255,94,0,0.18);color:var(--orange)}.ball-w{background:rgba(255,61,87,0.18);color:var(--red)}
 .fow-list{display:flex;flex-wrap:wrap;gap:6px}
 .fow-chip{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 9px;font-family:var(--f-mono);font-size:10px;color:var(--t2)}
 .fow-chip span{color:var(--red);margin-left:4px}
-
-/* NO LIVE MATCH state */
-.no-live{
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;text-align:center;
-  padding:48px 24px;gap:12px;
-}
-.no-live-icon{font-size:40px;opacity:0.4}
-.no-live-title{font-family:var(--f-display);font-size:24px;color:var(--t3);letter-spacing:0.04em}
-.no-live-sub{font-family:var(--f-mono);font-size:11px;color:var(--t3);letter-spacing:0.06em;max-width:280px;line-height:1.6}
-.next-match-countdown{
-  background:var(--surface2);border:1px solid var(--border2);
-  border-radius:10px;padding:14px 20px;
-  display:flex;gap:20px;align-items:center;
-}
-.nmc-time{font-family:var(--f-display);font-size:32px;color:var(--orange);line-height:1}
-.nmc-info{display:flex;flex-direction:column;gap:2px}
-.nmc-teams{font-family:var(--f-cond);font-size:15px;font-weight:700;letter-spacing:0.04em;color:var(--t1)}
-.nmc-venue{font-family:var(--f-mono);font-size:10px;color:var(--t3);letter-spacing:0.06em}
-
-/* FIXTURE CARD */
-.fixture-list{display:flex;flex-direction:column;gap:6px}
-.fixture-item{
-  display:flex;align-items:center;gap:12px;
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:10px;padding:12px 14px;
-  cursor:pointer;transition:border-color 0.2s;
-}
-.fixture-item:hover{border-color:rgba(255,94,0,0.35)}
-.fi-date{font-family:var(--f-mono);font-size:10px;color:var(--t3);letter-spacing:0.06em;flex-shrink:0;width:72px}
-.fi-teams{font-family:var(--f-cond);font-size:15px;font-weight:700;letter-spacing:0.03em;color:var(--t1);flex:1}
-.fi-venue{font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.06em;text-align:right;flex-shrink:0}
-.fi-status{font-family:var(--f-mono);font-size:9px;font-weight:700;letter-spacing:0.08em;padding:2px 7px;border-radius:4px;flex-shrink:0}
-.fi-live{background:rgba(255,61,87,0.15);color:var(--red)}
-.fi-done{background:rgba(0,230,118,0.1);color:var(--green)}
-.fi-upcoming{background:rgba(255,208,0,0.1);color:var(--gold)}
-
-/* FULL POINTS TABLE (Live Hub) */
 .full-pt-table{width:100%;border-collapse:collapse;font-size:13px}
 .full-pt-table th{font-family:var(--f-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--t3);padding:10px 14px;text-align:left;font-weight:400;border-bottom:1px solid var(--border2)}
 .full-pt-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--t2);vertical-align:middle}
@@ -344,55 +230,27 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .full-pt-table tbody tr:hover td{background:var(--surface2)}
 .qual-row td:first-child{border-left:2px solid var(--green)}
 .playoff-divider td{padding:0;height:2px;background:rgba(255,208,0,0.15)}
-
-/* NRR CALCULATOR */
 .nrr-calc{padding:0}
 .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
 .calc-field{display:flex;flex-direction:column;gap:6px}
 .calc-label{font-family:var(--f-mono);font-size:10px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase}
-.calc-input{
-  background:var(--surface2);border:1px solid var(--border2);
-  border-radius:8px;padding:10px 12px;
-  font-family:var(--f-mono);font-size:13px;color:var(--t1);
-  outline:none;transition:border-color 0.2s;width:100%;
-}
+.calc-input{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-family:var(--f-mono);font-size:13px;color:var(--t1);outline:none;transition:border-color 0.2s;width:100%}
 .calc-input:focus{border-color:var(--orange)}
-.calc-btn{
-  width:100%;background:var(--orange);color:#000;border:none;
-  border-radius:8px;padding:11px;
-  font-family:var(--f-cond);font-size:14px;font-weight:700;
-  letter-spacing:0.06em;cursor:pointer;transition:opacity 0.2s;
-  margin-bottom:14px;
-}
+.calc-btn{width:100%;background:var(--orange);color:#000;border:none;border-radius:8px;padding:11px;font-family:var(--f-cond);font-size:14px;font-weight:700;letter-spacing:0.06em;cursor:pointer;transition:opacity 0.2s;margin-bottom:14px}
 .calc-btn:hover{opacity:0.85}
-.calc-result{
-  background:var(--surface2);border:1px solid var(--border2);
-  border-radius:10px;padding:14px 16px;
-  display:none;
-}
+.calc-result{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;display:none}
 .calc-result.show{display:block}
 .cr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .cr-row:last-child{margin-bottom:0}
 .cr-label{font-family:var(--f-mono);font-size:10px;color:var(--t3);letter-spacing:0.08em}
 .cr-value{font-family:var(--f-display);font-size:18px;color:var(--gold)}
-.cr-delta-pos{color:var(--green)!important}
-.cr-delta-neg{color:var(--red)!important}
-
-/* QUALIFICATION SCENARIOS */
+.cr-delta-pos{color:var(--green)!important}.cr-delta-neg{color:var(--red)!important}
 .qual-table{width:100%;border-collapse:collapse;font-size:12px}
 .qual-table th{font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:400}
 .qual-table td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.03);color:var(--t2)}
 .qual-table tr:last-child td{border-bottom:none}
-.qual-alive{color:var(--green)!important;font-weight:600}
-.qual-out{color:var(--red)!important}
-.qual-maybe{color:var(--gold)!important}
-
-/* WEATHER WIDGET */
-.weather-card{
-  background:linear-gradient(135deg,var(--surface2) 0%,rgba(79,195,247,0.06) 100%);
-  border:1px solid rgba(79,195,247,0.15);
-  border-radius:14px;padding:18px;
-}
+.qual-alive{color:var(--green)!important;font-weight:600}.qual-out{color:var(--red)!important}.qual-maybe{color:var(--gold)!important}
+.weather-card{background:linear-gradient(135deg,var(--surface2) 0%,rgba(79,195,247,0.06) 100%);border:1px solid rgba(79,195,247,0.15);border-radius:14px;padding:18px}
 .weather-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
 .weather-city{font-family:var(--f-cond);font-size:18px;font-weight:700;letter-spacing:0.04em;color:var(--t1)}
 .weather-sub{font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.08em;margin-top:1px}
@@ -403,32 +261,433 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .wg-item{background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px}
 .wg-val{font-family:var(--f-display);font-size:16px;color:var(--t1);line-height:1}
 .wg-lbl{font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.08em;margin-top:2px}
-.weather-rain{
-  margin-top:12px;padding:8px 12px;
-  border-radius:8px;font-family:var(--f-mono);font-size:11px;
-  letter-spacing:0.06em;
-}
-.rain-low{background:rgba(0,230,118,0.08);color:var(--green)}
-.rain-mid{background:rgba(255,208,0,0.08);color:var(--gold)}
-.rain-high{background:rgba(255,61,87,0.1);color:var(--red)}
-.weather-loading{font-family:var(--f-mono);font-size:11px;color:var(--t3);padding:20px;text-align:center;letter-spacing:0.08em}
-
-/* API banner */
-.api-banner{
-  background:rgba(255,94,0,0.06);border:1px solid rgba(255,94,0,0.2);
-  border-radius:10px;padding:14px 16px;
-  display:flex;align-items:center;gap:12px;
-  margin-bottom:20px;
-}
-.api-banner-icon{font-size:20px;flex-shrink:0}
-.api-banner-text{flex:1}
-.api-banner-title{font-family:var(--f-cond);font-size:14px;font-weight:700;letter-spacing:0.04em;color:var(--orange);margin-bottom:2px}
-.api-banner-sub{font-family:var(--f-mono);font-size:10px;color:var(--t3);letter-spacing:0.04em}
-.api-banner-btn{font-family:var(--f-mono);font-size:10px;font-weight:700;letter-spacing:0.08em;color:#000;background:var(--orange);border:none;border-radius:6px;padding:7px 12px;cursor:pointer;flex-shrink:0;white-space:nowrap}
+.weather-rain{margin-top:12px;padding:8px 12px;border-radius:8px;font-family:var(--f-mono);font-size:11px;letter-spacing:0.06em}
+.rain-low{background:rgba(0,230,118,0.08);color:var(--green)}.rain-mid{background:rgba(255,208,0,0.08);color:var(--gold)}.rain-high{background:rgba(255,61,87,0.1);color:var(--red)}
+.fixture-list{display:flex;flex-direction:column;gap:6px}
+.fixture-item{display:flex;align-items:center;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:border-color 0.2s}
+.fixture-item:hover{border-color:rgba(255,94,0,0.35)}
+.fi-date{font-family:var(--f-mono);font-size:10px;color:var(--t3);letter-spacing:0.06em;flex-shrink:0;width:72px}
+.fi-teams{font-family:var(--f-cond);font-size:15px;font-weight:700;letter-spacing:0.03em;color:var(--t1);flex:1}
+.fi-venue{font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.06em;text-align:right;flex-shrink:0}
+.fi-status{font-family:var(--f-mono);font-size:9px;font-weight:700;letter-spacing:0.08em;padding:2px 7px;border-radius:4px;flex-shrink:0}
+.fi-live{background:rgba(255,61,87,0.15);color:var(--red)}.fi-done{background:rgba(0,230,118,0.1);color:var(--green)}.fi-upcoming{background:rgba(255,208,0,0.1);color:var(--gold)}
 
 /* ================================================================
-   PLACEHOLDER MODULES
+   STAT LAB — STEP 3
 ================================================================ */
+#pane-stats{padding-bottom:60px}
+
+/* Stat Lab Header */
+.stat-lab-header{
+  padding:36px 0 0;
+  position:relative;
+  overflow:hidden;
+}
+.stat-lab-bg-word{
+  position:absolute;
+  font-family:var(--f-display);
+  font-size:clamp(120px,18vw,220px);
+  color:rgba(255,94,0,0.025);
+  right:-20px;top:-10px;
+  pointer-events:none;
+  user-select:none;
+  line-height:1;
+  letter-spacing:0.02em;
+}
+.stat-lab-top{
+  display:flex;align-items:flex-end;
+  justify-content:space-between;
+  gap:16px;flex-wrap:wrap;
+  margin-bottom:24px;
+  position:relative;z-index:1;
+}
+.stat-lab-title{
+  font-family:var(--f-display);
+  font-size:clamp(48px,8vw,80px);
+  line-height:0.88;letter-spacing:0.02em;
+  color:var(--t1);
+}
+.stat-lab-title em{color:var(--orange);font-style:normal}
+.stat-lab-desc{
+  font-family:var(--f-mono);font-size:10px;
+  color:var(--t3);letter-spacing:0.08em;
+  text-align:right;line-height:1.8;
+  max-width:240px;
+}
+
+/* Data load progress */
+.data-progress{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px 16px;
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:20px;
+}
+.dp-bar-wrap{flex:1;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden}
+.dp-bar{height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));border-radius:2px;transition:width 0.4s;width:0%}
+.dp-text{font-family:var(--f-mono);font-size:10px;color:var(--t3);letter-spacing:0.06em;white-space:nowrap}
+.dp-count{font-family:var(--f-mono);font-size:10px;color:var(--orange);letter-spacing:0.04em;white-space:nowrap}
+.load-data-btn{
+  font-family:var(--f-mono);font-size:10px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:#000;background:var(--orange);
+  border:none;border-radius:6px;
+  padding:8px 14px;cursor:pointer;
+  transition:opacity 0.2s;white-space:nowrap;
+}
+.load-data-btn:hover{opacity:0.85}
+.load-data-btn:disabled{opacity:0.4;cursor:not-allowed}
+
+/* Season filter bar */
+.season-filter{
+  display:flex;align-items:center;gap:8px;
+  flex-wrap:wrap;margin-bottom:20px;
+}
+.sf-label{
+  font-family:var(--f-mono);font-size:10px;
+  color:var(--t3);letter-spacing:0.1em;
+  text-transform:uppercase;margin-right:4px;
+}
+.sf-btn{
+  font-family:var(--f-mono);font-size:10px;
+  color:var(--t3);background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:20px;padding:5px 12px;
+  cursor:pointer;transition:all 0.18s;
+  letter-spacing:0.06em;
+}
+.sf-btn:hover{color:var(--t1);border-color:var(--border2)}
+.sf-btn.on{
+  background:rgba(255,94,0,0.12);
+  border-color:var(--orange);
+  color:var(--orange);
+}
+
+/* Category tabs */
+.cat-tabs{
+  display:flex;gap:0;
+  border-bottom:1px solid var(--border);
+  margin-bottom:28px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.cat-tabs::-webkit-scrollbar{display:none}
+.cat-tab{
+  position:relative;
+  font-family:var(--f-cond);font-size:13px;
+  font-weight:700;letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--t3);background:transparent;
+  border:none;padding:12px 20px;
+  cursor:pointer;white-space:nowrap;
+  transition:color 0.2s;
+}
+.cat-tab:hover{color:var(--t2)}
+.cat-tab.on{color:var(--orange)}
+.cat-tab.on::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;
+  height:2px;background:var(--orange);
+  border-radius:2px 2px 0 0;
+}
+
+/* Stat category content panels */
+.cat-panel{display:none}
+.cat-panel.on{display:block;animation:fadeSlide 0.25s cubic-bezier(0.16,1,0.3,1)}
+
+/* Stat record cards grid */
+.stats-overview-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:28px;
+}
+.stat-rec-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px;
+  position:relative;
+  overflow:hidden;
+  transition:border-color 0.2s,transform 0.2s;
+  cursor:pointer;
+}
+.stat-rec-card:hover{border-color:rgba(255,94,0,0.3);transform:translateY(-2px)}
+.stat-rec-card::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:2px;
+  background:var(--clr-a,var(--orange));
+}
+.src-label{
+  font-family:var(--f-mono);font-size:9px;
+  color:var(--t3);letter-spacing:0.12em;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.src-value{
+  font-family:var(--f-display);
+  font-size:clamp(22px,3vw,32px);
+  color:var(--clr-a,var(--gold));
+  line-height:1;margin-bottom:4px;
+}
+.src-player{
+  font-family:var(--f-cond);font-size:14px;
+  font-weight:700;letter-spacing:0.03em;
+  color:var(--t1);margin-bottom:2px;
+}
+.src-team{
+  font-family:var(--f-mono);font-size:10px;
+  color:var(--t3);letter-spacing:0.04em;
+}
+.src-season{
+  position:absolute;bottom:10px;right:12px;
+  font-family:var(--f-display);font-size:28px;
+  color:rgba(255,255,255,0.03);
+  pointer-events:none;line-height:1;
+}
+
+/* Two col layout for stats + chart */
+.stats-two-col{
+  display:grid;
+  grid-template-columns:1fr 420px;
+  gap:20px;
+  align-items:start;
+  margin-bottom:28px;
+}
+.stats-main{display:flex;flex-direction:column;gap:16px}
+.stats-side{display:flex;flex-direction:column;gap:16px}
+
+/* Stat table card */
+.stat-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+.stat-card-head{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+}
+.stat-card-title{
+  font-family:var(--f-cond);font-size:14px;
+  font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--t1);
+  display:flex;align-items:center;gap:8px;
+}
+.stat-card-title span{
+  font-family:var(--f-mono);font-size:10px;
+  color:var(--t3);letter-spacing:0.06em;
+  font-weight:400;
+}
+.stat-badge{
+  font-family:var(--f-mono);font-size:9px;
+  font-weight:700;letter-spacing:0.1em;
+  padding:3px 8px;border-radius:4px;
+}
+.sb-bat{background:rgba(255,208,0,0.12);color:var(--gold)}
+.sb-bowl{background:rgba(192,132,252,0.12);color:var(--purple)}
+.sb-field{background:rgba(0,230,118,0.1);color:var(--green)}
+.sb-part{background:rgba(255,94,0,0.12);color:var(--orange)}
+.sb-keep{background:rgba(79,195,247,0.12);color:var(--blue)}
+.sb-match{background:rgba(255,61,87,0.12);color:var(--red)}
+.sb-team{background:rgba(192,132,252,0.1);color:var(--purple)}
+
+/* Leaderboard table */
+.lb-table{width:100%;border-collapse:collapse;font-size:13px}
+.lb-table th{
+  font-family:var(--f-mono);font-size:9px;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--t3);padding:10px 16px;
+  text-align:left;font-weight:400;
+  border-bottom:1px solid var(--border);
+}
+.lb-table td{
+  padding:11px 16px;
+  border-bottom:1px solid var(--border);
+  color:var(--t2);vertical-align:middle;
+}
+.lb-table tr:last-child td{border-bottom:none}
+.lb-table tbody tr{transition:background 0.12s;cursor:default}
+.lb-table tbody tr:hover td{background:var(--surface2)}
+.lb-rank{
+  font-family:var(--f-display);font-size:18px;
+  color:var(--t3);width:36px;
+}
+.lb-rank-1{color:var(--gold)!important}
+.lb-rank-2{color:rgba(192,192,192,0.8)!important}
+.lb-rank-3{color:rgba(205,127,50,0.8)!important}
+.lb-player{
+  font-family:var(--f-cond);font-size:15px;
+  font-weight:700;letter-spacing:0.03em;
+  color:var(--t1);
+}
+.lb-team-tag{
+  font-family:var(--f-mono);font-size:9px;
+  color:var(--t3);letter-spacing:0.06em;
+  display:block;margin-top:1px;
+}
+.lb-val{
+  font-family:var(--f-display);font-size:20px;
+  color:var(--gold);text-align:right;
+  white-space:nowrap;
+}
+.lb-sub{
+  font-family:var(--f-mono);font-size:10px;
+  color:var(--t3);text-align:right;
+}
+.lb-bar-cell{width:120px}
+.lb-mini-bar{
+  height:4px;background:var(--surface3);
+  border-radius:2px;overflow:hidden;
+}
+.lb-mini-bar-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--orange),var(--gold));
+  border-radius:2px;transition:width 0.5s;
+}
+
+/* Chart containers */
+.chart-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+  overflow:hidden;
+}
+.chart-title{
+  font-family:var(--f-cond);font-size:14px;
+  font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--t1);
+  margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;
+}
+.chart-wrap{
+  position:relative;
+  width:100%;
+}
+
+/* Phase analysis */
+.phase-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;margin-bottom:16px;
+}
+.phase-card{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;padding:14px;
+  text-align:center;
+}
+.phase-name{
+  font-family:var(--f-mono);font-size:9px;
+  color:var(--t3);letter-spacing:0.1em;
+  text-transform:uppercase;margin-bottom:6px;
+}
+.phase-overs{
+  font-family:var(--f-mono);font-size:9px;
+  color:var(--t3);letter-spacing:0.06em;
+  margin-bottom:8px;
+}
+.phase-val{
+  font-family:var(--f-display);font-size:28px;
+  line-height:1;
+}
+.phase-lbl{
+  font-family:var(--f-mono);font-size:9px;
+  color:var(--t3);letter-spacing:0.08em;
+  margin-top:4px;
+}
+
+/* Wide full-width table section */
+.full-stat-section{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  margin-bottom:20px;
+}
+.fss-head{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  background:var(--surface2);
+}
+.fss-title{
+  font-family:var(--f-cond);font-size:14px;
+  font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--t1);
+}
+.fss-body{padding:0;overflow-x:auto}
+
+/* Sub-section dividers inside stat panels */
+.stat-section-divider{
+  display:flex;align-items:center;gap:12px;
+  margin:24px 0 16px;
+}
+.ssd-label{
+  font-family:var(--f-mono);font-size:10px;
+  color:var(--orange);letter-spacing:0.16em;
+  text-transform:uppercase;white-space:nowrap;
+}
+.ssd-line{
+  flex:1;height:1px;
+  background:linear-gradient(to right,rgba(255,94,0,0.3),transparent);
+}
+
+/* Stadium map grid */
+.stadium-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.stadium-card{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;padding:14px;
+  transition:border-color 0.2s;cursor:default;
+}
+.stadium-card:hover{border-color:rgba(255,94,0,0.3)}
+.st-name{
+  font-family:var(--f-cond);font-size:13px;
+  font-weight:700;letter-spacing:0.04em;
+  color:var(--t1);margin-bottom:2px;
+}
+.st-city{
+  font-family:var(--f-mono);font-size:9px;
+  color:var(--t3);letter-spacing:0.06em;
+  margin-bottom:10px;
+}
+.st-stats{display:flex;gap:10px;flex-wrap:wrap}
+.st-stat{display:flex;flex-direction:column;gap:1px}
+.st-val{
+  font-family:var(--f-display);font-size:16px;
+  color:var(--gold);line-height:1;
+}
+.st-lbl{
+  font-family:var(--f-mono);font-size:8px;
+  color:var(--t3);letter-spacing:0.08em;
+  text-transform:uppercase;
+}
+.st-winbar{
+  margin-top:10px;
+  height:6px;background:var(--surface3);
+  border-radius:3px;overflow:hidden;
+  display:flex;
+}
+.st-bat-first{height:100%;background:var(--orange)}
+.st-field-first{height:100%;background:var(--blue)}
+.st-bar-labels{
+  display:flex;justify-content:space-between;
+  margin-top:4px;
+}
+.st-bar-lbl{
+  font-family:var(--f-mono);font-size:8px;
+  color:var(--t3);letter-spacing:0.06em;
+}
+
+/* Placeholder modules */
 .mod-placeholder{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;position:relative;overflow:hidden}
 .mod-bg-num{position:absolute;font-family:var(--f-display);font-size:clamp(200px,35vw,400px);color:rgba(255,255,255,0.018);pointer-events:none;user-select:none;z-index:0}
 .mod-content{position:relative;z-index:1}
@@ -451,18 +710,10 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .footer-links a:hover{color:var(--orange)}
 .footer-note{font-family:var(--f-mono);font-size:9.5px;color:var(--t3);letter-spacing:0.04em;line-height:1.7;text-align:right}
 
-/* RESPONSIVE */
+/* Responsive */
+@media(max-width:1100px){.stats-two-col{grid-template-columns:1fr}.stats-overview-grid{grid-template-columns:repeat(2,1fr)}.live-grid{grid-template-columns:1fr}.stadium-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:960px){.qnav-grid{grid-template-columns:repeat(2,1fr)};#pitch-bg{display:none}}
-@media(max-width:600px){.wrap{padding:0 16px};.qnav-grid{grid-template-columns:repeat(2,1fr)};.calc-grid{grid-template-columns:1fr};.live-hub-top{flex-direction:column;align-items:flex-start};.live-hub-desc{text-align:left}}
-
-.qcard:nth-child(1){animation:revealUp 0.5s 0.05s both}
-.qcard:nth-child(2){animation:revealUp 0.5s 0.1s both}
-.qcard:nth-child(3){animation:revealUp 0.5s 0.15s both}
-.qcard:nth-child(4){animation:revealUp 0.5s 0.2s both}
-.qcard:nth-child(5){animation:revealUp 0.5s 0.25s both}
-.qcard:nth-child(6){animation:revealUp 0.5s 0.3s both}
-.qcard:nth-child(7){animation:revealUp 0.5s 0.35s both}
-.qcard:nth-child(8){animation:revealUp 0.5s 0.4s both}
+@media(max-width:600px){.wrap{padding:0 16px}.qnav-grid{grid-template-columns:repeat(2,1fr)}.stats-overview-grid{grid-template-columns:1fr 1fr}.calc-grid{grid-template-columns:1fr}.phase-grid{grid-template-columns:1fr}.stadium-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -475,35 +726,24 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   <button class="drawer-close" onclick="closeSettings()">✕</button>
   <h2 class="drawer-title">SETTINGS</h2>
   <p class="drawer-sub">Configure your data sources below</p>
-
   <p class="drawer-label">CricketData.org API Key</p>
   <input class="drawer-input" id="api-key-input" type="password" placeholder="Paste your API key here…" autocomplete="off"/>
   <button class="drawer-btn" onclick="saveApiKey()">SAVE API KEY</button>
   <div class="drawer-status" id="api-status">✓ API key saved successfully</div>
-
   <div class="drawer-divider"></div>
-
   <p class="drawer-label" style="margin-bottom:6px">API Usage Today</p>
   <div class="drawer-usage">
     <span style="font-family:var(--f-mono);font-size:11px;color:var(--t2)" id="usage-text">0 / 100 requests</span>
     <span style="font-family:var(--f-mono);font-size:10px;color:var(--t3)">Resets at midnight</span>
   </div>
   <div class="usage-bar-wrap"><div class="usage-bar" id="usage-bar" style="width:0%"></div></div>
-
   <div class="drawer-divider"></div>
-
-  <p class="drawer-note">
-    🔒 Your API key is stored only on <b>this device</b> using browser LocalStorage. It is never uploaded, shared, or sent anywhere. IPL Deck is 100% private.
-    <br><br>
-    📋 Get a free key at <b>cricketdata.org</b> — free tier gives 100 requests/day, enough for a full match day (30-sec refresh).
-    <br><br>
-    🌤 Weather data uses <b>Open-Meteo</b> — no API key needed, completely free.
-  </p>
+  <p class="drawer-note">🔒 Your API key is stored only on this device. Never uploaded anywhere.<br><br>📋 Get a free key at cricketdata.org — free tier gives 100 requests/day.<br><br>🌤 Weather uses Open-Meteo — no key needed, completely free.</p>
 </div>
 
 <!-- TICKER -->
 <div id="ticker-strip" aria-hidden="true">
-  <div class="ticker-inner" id="ticker">
+  <div class="ticker-inner">
     <span>IPL Deck · Season 19 · IPL 2026</span>
     <span>Live Scores · Ball by Ball Stats · 19 Seasons Archived</span>
     <span>10 Franchises · 30+ Stadiums · 500+ Players</span>
@@ -525,23 +765,20 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 <header id="site-header">
   <div class="wrap">
     <div class="header-inner">
-      <div class="logo" onclick="switchMod('home')" role="link" aria-label="IPL Deck Home">
+      <div class="logo" onclick="switchMod('home')" role="link">
         <div class="logo-mark">🏏</div>
         <div class="logo-text">
           <span class="logo-name">IPL<em> DECK</em></span>
           <span class="logo-sub">Fan Intelligence Dashboard</span>
         </div>
       </div>
-      <div class="live-pill">
-        <span class="live-dot"></span>
-        IPL 2026 &nbsp;·&nbsp; SEASON 19
-      </div>
+      <div class="live-pill"><span class="live-dot"></span>IPL 2026 &nbsp;·&nbsp; SEASON 19</div>
     </div>
   </div>
 </header>
 
 <!-- NAV -->
-<nav id="main-nav" role="navigation">
+<nav id="main-nav">
   <div class="wrap">
     <div class="nav-track">
       <button class="nb on" data-m="home"><span>🏠</span>Home</button>
@@ -558,7 +795,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   </div>
 </nav>
 
-<!-- ══ MODULE: HOME ══════════════════════════════════════ -->
+<!-- ══ HOME ══════════════════════════════════════════════════ -->
 <div class="pane on" id="pane-home">
   <section id="home-hero">
     <div id="pitch-bg" aria-hidden="true">
@@ -597,7 +834,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         </div>
         <div class="hero-stats">
           <div class="hstat"><span class="hstat-n">19</span><span class="hstat-l">Seasons</span></div>
-          <div class="hstat"><span class="hstat-n">1100+</span><span class="hstat-l">Matches</span></div>
+          <div class="hstat"><span class="hstat-n">1,209</span><span class="hstat-l">Matches</span></div>
           <div class="hstat"><span class="hstat-n">500+</span><span class="hstat-l">Players</span></div>
           <div class="hstat"><span class="hstat-n">34</span><span class="hstat-l">Stadiums</span></div>
           <div class="hstat"><span class="hstat-n">100+</span><span class="hstat-l">Stat Categories</span></div>
@@ -605,26 +842,24 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       </div>
     </div>
   </section>
-
   <div id="score-bar">
     <div class="wrap">
       <div class="score-bar-inner">
         <span style="font-family:var(--f-mono);font-size:9px;color:var(--orange);letter-spacing:0.16em;text-transform:uppercase;flex-shrink:0">Today</span>
         <div class="score-chip" onclick="switchMod('live')"><span class="sc-live-tag">LIVE</span><span class="sc-teams">MI vs CSK</span><span class="sc-score">CSK 142/4</span><span class="sc-over">(16.2 ov)</span></div>
-        <span class="score-sep">·</span>
+        <span style="font-family:var(--f-mono);font-size:10px;color:var(--t3);flex-shrink:0">·</span>
         <div class="score-chip" onclick="switchMod('live')"><span class="sc-upcoming-tag">20:00 IST</span><span class="sc-teams">RCB vs KKR</span><span class="sc-score">Chinnaswamy</span></div>
-        <span class="score-sep">·</span>
+        <span style="font-family:var(--f-mono);font-size:10px;color:var(--t3);flex-shrink:0">·</span>
         <div class="score-chip" onclick="switchMod('live')"><span class="sc-upcoming-tag">YESTERDAY</span><span class="sc-teams">SRH vs DC</span><span class="sc-score">SRH won by 34 runs</span></div>
       </div>
     </div>
   </div>
-
   <section id="quick-nav-section">
     <div class="wrap">
       <p class="section-label">Explore IPL Deck</p>
       <div class="qnav-grid">
         <div class="qcard" style="--clr-a:rgba(255,94,0,0.4)" onclick="switchMod('live')"><span class="qcard-num">01</span><div class="qcard-icon">📡</div><span class="qcard-title">Live Hub</span><span class="qcard-sub">Scores · Fixtures · Points table · NRR calculator · Weather</span></div>
-        <div class="qcard" style="--clr-a:rgba(255,208,0,0.35)" onclick="switchMod('stats')"><span class="qcard-num">02</span><div class="qcard-icon">📊</div><span class="qcard-title">Stat Lab</span><span class="qcard-sub">Orange Cap · Purple Cap · All batting, bowling & fielding records</span></div>
+        <div class="qcard" style="--clr-a:rgba(255,208,0,0.35)" onclick="switchMod('stats')"><span class="qcard-num">02</span><div class="qcard-icon">📊</div><span class="qcard-title">Stat Lab</span><span class="qcard-sub">Orange Cap · Purple Cap · 100+ batting, bowling & fielding records</span></div>
         <div class="qcard" style="--clr-a:rgba(79,195,247,0.3)" onclick="switchMod('teams')"><span class="qcard-num">03</span><div class="qcard-icon">⚔️</div><span class="qcard-title">War Room</span><span class="qcard-sub">Win patterns · Venue intel · Form heatmap · Team analytics</span></div>
         <div class="qcard" style="--clr-a:rgba(255,61,87,0.3)" onclick="switchMod('rivalry')"><span class="qcard-num">04</span><div class="qcard-icon">🔥</div><span class="qcard-title">Rivalry Arena</span><span class="qcard-sub">H2H battles · Player vs Player · Clash cards</span></div>
         <div class="qcard" style="--clr-a:rgba(167,139,250,0.3)" onclick="switchMod('vault')"><span class="qcard-num">05</span><div class="qcard-icon">🗄️</div><span class="qcard-title">Time Vault</span><span class="qcard-sub">All 19 seasons archived · Finals · Season compare</span></div>
@@ -634,7 +869,6 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       </div>
     </div>
   </section>
-
   <section id="table-section">
     <div class="wrap">
       <div class="section-head">
@@ -645,36 +879,28 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         <table class="pt-table">
           <thead><tr><th>#</th><th>Team</th><th style="text-align:right">M</th><th style="text-align:right">W</th><th style="text-align:right">L</th><th style="text-align:right">NRR</th><th style="text-align:right">Pts</th><th>Form</th></tr></thead>
           <tbody>
-            <tr onclick="switchMod('teams')"><td><span class="pos-num pos-qual">1</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#004898"></div><div><div class="team-abbr">MI</div><div class="team-full">Mumbai Indians</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">6</td><td class="stat-cell">2</td><td class="stat-cell nrr-pos">+0.82</td><td class="pts-cell">12</td><td><div class="form-row"><span class="fd fw">W</span><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span></div></td></tr>
-            <tr onclick="switchMod('teams')"><td><span class="pos-num pos-qual">2</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#F5C400"></div><div><div class="team-abbr">CSK</div><div class="team-full">Chennai Super Kings</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">5</td><td class="stat-cell">3</td><td class="stat-cell nrr-pos">+0.43</td><td class="pts-cell">10</td><td><div class="form-row"><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span><span class="fd fl">L</span></div></td></tr>
-            <tr onclick="switchMod('teams')"><td><span class="pos-num pos-qual">3</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#C8102E"></div><div><div class="team-abbr">RCB</div><div class="team-full">Royal Challengers Bengaluru</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">5</td><td class="stat-cell">3</td><td class="stat-cell nrr-neg">−0.11</td><td class="pts-cell">10</td><td><div class="form-row"><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span></div></td></tr>
-            <tr onclick="switchMod('teams')"><td><span class="pos-num pos-qual">4</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#3B2160"></div><div><div class="team-abbr">KKR</div><div class="team-full">Kolkata Knight Riders</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">4</td><td class="stat-cell">4</td><td class="stat-cell nrr-pos">+0.21</td><td class="pts-cell">8</td><td><div class="form-row"><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span></div></td></tr>
-            <tr onclick="switchMod('teams')"><td><span class="pos-num">5</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#F26522"></div><div><div class="team-abbr">SRH</div><div class="team-full">Sunrisers Hyderabad</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">4</td><td class="stat-cell">4</td><td class="stat-cell nrr-neg">−0.09</td><td class="pts-cell">8</td><td><div class="form-row"><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fl">L</span></div></td></tr>
+            <tr><td><span class="pos-num pos-qual">1</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#004898"></div><div><div class="team-abbr">MI</div><div class="team-full">Mumbai Indians</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">6</td><td class="stat-cell">2</td><td class="stat-cell nrr-pos">+0.82</td><td class="pts-cell">12</td><td><div class="form-row"><span class="fd fw">W</span><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span></div></td></tr>
+            <tr><td><span class="pos-num pos-qual">2</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#F5C400"></div><div><div class="team-abbr">CSK</div><div class="team-full">Chennai Super Kings</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">5</td><td class="stat-cell">3</td><td class="stat-cell nrr-pos">+0.43</td><td class="pts-cell">10</td><td><div class="form-row"><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span><span class="fd fl">L</span></div></td></tr>
+            <tr><td><span class="pos-num pos-qual">3</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#C8102E"></div><div><div class="team-abbr">RCB</div><div class="team-full">Royal Challengers Bengaluru</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">5</td><td class="stat-cell">3</td><td class="stat-cell nrr-neg">−0.11</td><td class="pts-cell">10</td><td><div class="form-row"><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span></div></td></tr>
+            <tr><td><span class="pos-num pos-qual">4</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#3B2160"></div><div><div class="team-abbr">KKR</div><div class="team-full">Kolkata Knight Riders</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">4</td><td class="stat-cell">4</td><td class="stat-cell nrr-pos">+0.21</td><td class="pts-cell">8</td><td><div class="form-row"><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span></div></td></tr>
+            <tr><td><span class="pos-num">5</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#F26522"></div><div><div class="team-abbr">SRH</div><div class="team-full">Sunrisers Hyderabad</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">4</td><td class="stat-cell">4</td><td class="stat-cell nrr-neg">−0.09</td><td class="pts-cell">8</td><td><div class="form-row"><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fl">L</span></div></td></tr>
           </tbody>
         </table>
       </div>
-      <p class="data-note">Sample data. Live data activates once your CricketData.org API key is configured in Live Hub → Settings.</p>
+      <p class="data-note">Sample data · Live data activates once your CricketData.org API key is configured in Live Hub → Settings.</p>
     </div>
   </section>
 </div>
 
-<!-- ══ MODULE: LIVE HUB ══════════════════════════════════ -->
+<!-- ══ LIVE HUB ══════════════════════════════════════════════ -->
 <div class="pane" id="pane-live">
   <div class="wrap">
-
-    <!-- Header -->
     <div class="live-hub-header">
       <div class="live-hub-top">
         <h2 class="live-hub-title">LIVE<br><em>HUB</em></h2>
-        <div class="live-hub-desc">
-          Real-time scores · Fixtures<br>
-          Full points table · NRR calculator<br>
-          Qualification scenarios · Weather
-        </div>
+        <div class="live-hub-desc">Real-time scores · Fixtures<br>Full points table · NRR calculator<br>Qualification scenarios · Weather</div>
       </div>
     </div>
-
-    <!-- API Key banner (shown when no key set) -->
     <div class="api-banner" id="api-banner">
       <span class="api-banner-icon">🔑</span>
       <div class="api-banner-text">
@@ -683,59 +909,23 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       </div>
       <button class="api-banner-btn" onclick="openSettings()">⚙ CONFIGURE →</button>
     </div>
-
-    <!-- Main grid -->
     <div class="live-grid">
-
-      <!-- LEFT COLUMN — Main content -->
       <div class="live-main">
-
-        <!-- LIVE SCORECARD -->
         <div class="lcard">
-          <div class="lcard-head">
-            <span class="lcard-title">Live Scorecard</span>
-            <span class="lcard-badge badge-live">⬤ LIVE</span>
-          </div>
+          <div class="lcard-head"><span class="lcard-title">Live Scorecard</span><span class="lcard-badge badge-live">⬤ LIVE</span></div>
           <div class="lcard-body">
-
-            <!-- Match teams & score -->
             <div class="live-match-teams">
-              <div class="lmt-team">
-                <span class="lmt-abbr" style="color:#F5C400">CSK</span>
-                <span class="lmt-full">Chennai Super Kings</span>
-                <span class="lmt-score">142/4</span>
-                <span class="lmt-over">16.2 overs · CRR 8.69</span>
-              </div>
+              <div class="lmt-team"><span class="lmt-abbr" style="color:#F5C400">CSK</span><span class="lmt-full">Chennai Super Kings</span><span class="lmt-score">142/4</span><span class="lmt-over">16.2 overs · CRR 8.69</span></div>
               <span class="lmt-vs">VS</span>
-              <div class="lmt-team right">
-                <span class="lmt-abbr" style="color:#004898">MI</span>
-                <span class="lmt-full">Mumbai Indians</span>
-                <span class="lmt-score" style="color:var(--t3)">—</span>
-                <span class="lmt-over">Yet to bat</span>
-              </div>
+              <div class="lmt-team right"><span class="lmt-abbr" style="color:#004898">MI</span><span class="lmt-full">Mumbai Indians</span><span class="lmt-score" style="color:var(--t3)">—</span><span class="lmt-over">Yet to bat</span></div>
             </div>
-
-            <!-- Status bar -->
             <div class="live-status-bar">
               <div class="lsb-item"><span class="lsb-val">4</span><span class="lsb-lbl">Wkts Lost</span></div>
               <div class="lsb-item"><span class="lsb-val">16.2</span><span class="lsb-lbl">Overs</span></div>
               <div class="lsb-item"><span class="lsb-val">8.69</span><span class="lsb-lbl">Curr RR</span></div>
-              <div class="lsb-item"><span class="lsb-val">3.8</span><span class="lsb-lbl">Ov Left</span></div>
+              <div class="lsb-item"><span class="lsb-val">3.4</span><span class="lsb-lbl">Ov Left</span></div>
             </div>
-
-            <!-- Last 6 balls -->
-            <div class="last6">
-              <span class="last6-lbl">LAST 6</span>
-              <div class="ball ball-dot">·</div>
-              <div class="ball ball-4">4</div>
-              <div class="ball ball-1">1</div>
-              <div class="ball ball-w">W</div>
-              <div class="ball ball-6">6</div>
-              <div class="ball ball-dot">·</div>
-            </div>
-
-            <!-- Batters table -->
-            <p style="font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px">Batting</p>
+            <div class="last6"><span class="last6-lbl">LAST 6</span><div class="ball ball-dot">·</div><div class="ball ball-4">4</div><div class="ball ball-1">1</div><div class="ball ball-w">W</div><div class="ball ball-6">6</div><div class="ball ball-dot">·</div></div>
             <table class="live-table">
               <thead><tr><th>Batter</th><th class="mono">R</th><th class="mono">B</th><th class="mono">4s</th><th class="mono">6s</th><th class="mono">SR</th></tr></thead>
               <tbody>
@@ -743,76 +933,32 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
                 <tr><td>Shivam Dube</td><td class="mono">28</td><td class="mono">18</td><td class="mono">2</td><td class="mono">2</td><td class="mono">155.5</td></tr>
               </tbody>
             </table>
-
-            <!-- Bowlers table -->
-            <p style="font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;margin:10px 0 6px">Bowling</p>
-            <table class="live-table">
+            <table class="live-table" style="margin-top:10px">
               <thead><tr><th>Bowler</th><th class="mono">O</th><th class="mono">M</th><th class="mono">R</th><th class="mono">W</th><th class="mono">Eco</th></tr></thead>
               <tbody>
                 <tr class="highlight-row"><td class="on-strike">Jasprit Bumrah ▶</td><td class="mono">3.2</td><td class="mono">0</td><td class="mono">18</td><td class="mono">2</td><td class="mono">5.40</td></tr>
                 <tr><td>Hardik Pandya</td><td class="mono">3</td><td class="mono">0</td><td class="mono">31</td><td class="mono">1</td><td class="mono">10.33</td></tr>
               </tbody>
             </table>
-
-            <!-- Fall of wickets -->
-            <p style="font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;margin:10px 0 6px">Fall of Wickets</p>
-            <div class="fow-list">
+            <p style="font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.06em;margin-top:10px">Fall of Wickets</p>
+            <div class="fow-list" style="margin-top:6px">
               <div class="fow-chip">1/<span>45</span> (Conway, 5.3)</div>
               <div class="fow-chip">2/<span>88</span> (Kohli, 10.1)</div>
               <div class="fow-chip">3/<span>112</span> (du Plessis, 13.4)</div>
               <div class="fow-chip">4/<span>142</span> (Jadeja, 16.1)</div>
             </div>
-
-            <p style="font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.06em;margin-top:12px">
-              ⚠ Sample data shown · Configure API key to enable live scores
-            </p>
           </div>
         </div>
-
-        <!-- FULL POINTS TABLE -->
         <div class="lcard">
-          <div class="lcard-head">
-            <span class="lcard-title">IPL 2026 Points Table</span>
-            <span class="lcard-badge badge-today">ALL 10 TEAMS</span>
-          </div>
-          <div style="overflow-x:auto">
-            <table class="full-pt-table">
-              <thead><tr><th>#</th><th>Team</th><th style="text-align:right">M</th><th style="text-align:right">W</th><th style="text-align:right">L</th><th style="text-align:right">T</th><th style="text-align:right">NR</th><th style="text-align:right">NRR</th><th style="text-align:right">Pts</th><th>Form</th></tr></thead>
-              <tbody>
-                <tr class="qual-row"><td><span class="pos-num pos-qual">1</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#004898"></div><div><div class="team-abbr">MI</div><div class="team-full">Mumbai Indians</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">6</td><td class="stat-cell">2</td><td class="stat-cell">0</td><td class="stat-cell">0</td><td class="stat-cell nrr-pos">+0.82</td><td class="pts-cell">12</td><td><div class="form-row"><span class="fd fw">W</span><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span></div></td></tr>
-                <tr class="qual-row"><td><span class="pos-num pos-qual">2</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#F5C400"></div><div><div class="team-abbr">CSK</div><div class="team-full">Chennai Super Kings</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">5</td><td class="stat-cell">3</td><td class="stat-cell">0</td><td class="stat-cell">0</td><td class="stat-cell nrr-pos">+0.43</td><td class="pts-cell">10</td><td><div class="form-row"><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span><span class="fd fl">L</span></div></td></tr>
-                <tr class="qual-row"><td><span class="pos-num pos-qual">3</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#C8102E"></div><div><div class="team-abbr">RCB</div><div class="team-full">Royal Challengers Bengaluru</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">5</td><td class="stat-cell">3</td><td class="stat-cell">0</td><td class="stat-cell">0</td><td class="stat-cell nrr-neg">−0.11</td><td class="pts-cell">10</td><td><div class="form-row"><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span></div></td></tr>
-                <tr class="qual-row"><td><span class="pos-num pos-qual">4</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#3B2160"></div><div><div class="team-abbr">KKR</div><div class="team-full">Kolkata Knight Riders</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">4</td><td class="stat-cell">4</td><td class="stat-cell">0</td><td class="stat-cell">0</td><td class="stat-cell nrr-pos">+0.21</td><td class="pts-cell">8</td><td><div class="form-row"><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span></div></td></tr>
-                <tr><td colspan="10" class="playoff-divider"></td></tr>
-                <tr><td><span class="pos-num">5</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#F26522"></div><div><div class="team-abbr">SRH</div><div class="team-full">Sunrisers Hyderabad</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">4</td><td class="stat-cell">4</td><td class="stat-cell">0</td><td class="stat-cell">0</td><td class="stat-cell nrr-neg">−0.09</td><td class="pts-cell">8</td><td><div class="form-row"><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fl">L</span></div></td></tr>
-                <tr><td><span class="pos-num">6</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#004C97"></div><div><div class="team-abbr">DC</div><div class="team-full">Delhi Capitals</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">4</td><td class="stat-cell">4</td><td class="stat-cell">0</td><td class="stat-cell">0</td><td class="stat-cell nrr-neg">−0.18</td><td class="pts-cell">8</td><td><div class="form-row"><span class="fd fl">L</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fw">W</span><span class="fd fl">L</span></div></td></tr>
-                <tr><td><span class="pos-num">7</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#254AA5"></div><div><div class="team-abbr">RR</div><div class="team-full">Rajasthan Royals</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">3</td><td class="stat-cell">5</td><td class="stat-cell">0</td><td class="stat-cell">0</td><td class="stat-cell nrr-pos">+0.06</td><td class="pts-cell">6</td><td><div class="form-row"><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fl">L</span></div></td></tr>
-                <tr><td><span class="pos-num">8</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#ED1B24"></div><div><div class="team-abbr">PBKS</div><div class="team-full">Punjab Kings</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">3</td><td class="stat-cell">5</td><td class="stat-cell">0</td><td class="stat-cell">0</td><td class="stat-cell nrr-neg">−0.31</td><td class="pts-cell">6</td><td><div class="form-row"><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fl">L</span><span class="fd fw">W</span></div></td></tr>
-                <tr><td><span class="pos-num">9</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#00204A"></div><div><div class="team-abbr">LSG</div><div class="team-full">Lucknow Super Giants</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">3</td><td class="stat-cell">5</td><td class="stat-cell">0</td><td class="stat-cell">0</td><td class="stat-cell nrr-neg">−0.44</td><td class="pts-cell">6</td><td><div class="form-row"><span class="fd fl">L</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fl">L</span><span class="fd fw">W</span></div></td></tr>
-                <tr><td><span class="pos-num">10</span></td><td><div class="team-cell"><div class="team-color-bar" style="background:#1B2133"></div><div><div class="team-abbr">GT</div><div class="team-full">Gujarat Titans</div></div></div></td><td class="stat-cell">8</td><td class="stat-cell">2</td><td class="stat-cell">6</td><td class="stat-cell">0</td><td class="stat-cell">0</td><td class="stat-cell nrr-neg">−0.72</td><td class="pts-cell">4</td><td><div class="form-row"><span class="fd fl">L</span><span class="fd fl">L</span><span class="fd fl">L</span><span class="fd fw">W</span><span class="fd fl">L</span></div></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div style="padding:10px 14px;border-top:1px solid var(--border)">
-            <p class="data-note" style="margin:0">Top 4 (green left border) qualify for playoffs · Dividing line separates playoff zone</p>
-          </div>
-        </div>
-
-        <!-- NRR CALCULATOR -->
-        <div class="lcard">
-          <div class="lcard-head">
-            <span class="lcard-title">NRR Calculator</span>
-            <span class="lcard-badge badge-upcoming">TOOL</span>
-          </div>
+          <div class="lcard-head"><span class="lcard-title">NRR Calculator</span><span class="lcard-badge badge-upcoming">TOOL</span></div>
           <div class="lcard-body nrr-calc">
-            <p style="font-family:var(--f-mono);font-size:10px;color:var(--t3);letter-spacing:0.06em;margin-bottom:14px">Simulate how a match result changes a team's Net Run Rate</p>
             <div class="calc-grid">
-              <div class="calc-field"><label class="calc-label">Team's Total Runs For</label><input class="calc-input" id="c-runs-for" type="number" placeholder="e.g. 180" min="0" max="300"/></div>
+              <div class="calc-field"><label class="calc-label">Runs Scored</label><input class="calc-input" id="c-runs-for" type="number" placeholder="e.g. 180" min="0" max="300"/></div>
               <div class="calc-field"><label class="calc-label">Overs Faced</label><input class="calc-input" id="c-overs-for" type="number" placeholder="e.g. 20" min="0.1" max="20" step="0.1"/></div>
               <div class="calc-field"><label class="calc-label">Runs Conceded</label><input class="calc-input" id="c-runs-against" type="number" placeholder="e.g. 160" min="0" max="300"/></div>
               <div class="calc-field"><label class="calc-label">Overs Bowled</label><input class="calc-input" id="c-overs-against" type="number" placeholder="e.g. 20" min="0.1" max="20" step="0.1"/></div>
-              <div class="calc-field"><label class="calc-label">Current Team NRR</label><input class="calc-input" id="c-current-nrr" type="number" placeholder="e.g. +0.43" step="0.01"/></div>
-              <div class="calc-field"><label class="calc-label">Matches Played So Far</label><input class="calc-input" id="c-matches-played" type="number" placeholder="e.g. 8" min="1" max="14"/></div>
+              <div class="calc-field"><label class="calc-label">Current NRR</label><input class="calc-input" id="c-current-nrr" type="number" placeholder="e.g. +0.43" step="0.01"/></div>
+              <div class="calc-field"><label class="calc-label">Matches Played</label><input class="calc-input" id="c-matches-played" type="number" placeholder="e.g. 8" min="1" max="14"/></div>
             </div>
             <button class="calc-btn" onclick="calcNRR()">CALCULATE NEW NRR</button>
             <div class="calc-result" id="calc-result">
@@ -822,97 +968,21 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
             </div>
           </div>
         </div>
-
-        <!-- QUALIFICATION SCENARIOS -->
-        <div class="lcard">
-          <div class="lcard-head">
-            <span class="lcard-title">Playoff Qualification Scenarios</span>
-            <span class="lcard-badge badge-today">6 MATCHES LEFT</span>
-          </div>
-          <div style="overflow-x:auto">
-            <table class="qual-table">
-              <thead><tr><th>Team</th><th>Pts</th><th>Rem</th><th>Max Pts</th><th>Status</th><th>Need</th></tr></thead>
-              <tbody>
-                <tr><td><b style="color:var(--t1)">MI</b></td><td class="stat-cell">12</td><td class="stat-cell">6</td><td class="stat-cell">24</td><td class="qual-alive">QUALIFIED ✓</td><td style="font-size:11px;color:var(--t3)">Already through</td></tr>
-                <tr><td><b style="color:var(--t1)">CSK</b></td><td class="stat-cell">10</td><td class="stat-cell">6</td><td class="stat-cell">22</td><td class="qual-alive">LIKELY ✓</td><td style="font-size:11px;color:var(--t2)">Win 2 of remaining 6</td></tr>
-                <tr><td><b style="color:var(--t1)">RCB</b></td><td class="stat-cell">10</td><td class="stat-cell">6</td><td class="stat-cell">22</td><td class="qual-alive">LIKELY ✓</td><td style="font-size:11px;color:var(--t2)">Win 2 + NRR watch</td></tr>
-                <tr><td><b style="color:var(--t1)">KKR</b></td><td class="stat-cell">8</td><td class="stat-cell">6</td><td class="stat-cell">20</td><td class="qual-maybe">IN THE MIX</td><td style="font-size:11px;color:var(--t2)">Win 4 of remaining 6</td></tr>
-                <tr><td><b style="color:var(--t1)">SRH</b></td><td class="stat-cell">8</td><td class="stat-cell">6</td><td class="stat-cell">20</td><td class="qual-maybe">IN THE MIX</td><td style="font-size:11px;color:var(--t2)">Win all 6 + results</td></tr>
-                <tr><td><b style="color:var(--t1)">DC</b></td><td class="stat-cell">8</td><td class="stat-cell">6</td><td class="stat-cell">20</td><td class="qual-maybe">IN THE MIX</td><td style="font-size:11px;color:var(--t2)">Win all 6 + results</td></tr>
-                <tr><td><b style="color:var(--t1)">RR</b></td><td class="stat-cell">6</td><td class="stat-cell">6</td><td class="stat-cell">18</td><td class="qual-out">UNLIKELY</td><td style="font-size:11px;color:var(--t3)">Need miracle run</td></tr>
-                <tr><td><b style="color:var(--t1)">PBKS</b></td><td class="stat-cell">6</td><td class="stat-cell">6</td><td class="stat-cell">18</td><td class="qual-out">UNLIKELY</td><td style="font-size:11px;color:var(--t3)">Need miracle run</td></tr>
-                <tr><td><b style="color:var(--t1)">LSG</b></td><td class="stat-cell">6</td><td class="stat-cell">6</td><td class="stat-cell">18</td><td class="qual-out">ELIMINATED</td><td style="font-size:11px;color:var(--red)">Mathematically out</td></tr>
-                <tr><td><b style="color:var(--t1)">GT</b></td><td class="stat-cell">4</td><td class="stat-cell">6</td><td class="stat-cell">16</td><td class="qual-out">ELIMINATED</td><td style="font-size:11px;color:var(--red)">Mathematically out</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div style="padding:10px 14px;border-top:1px solid var(--border)">
-            <p class="data-note" style="margin:0">Sample data · Updates automatically after each match result</p>
-          </div>
-        </div>
-
-      </div><!-- /live-main -->
-
-      <!-- RIGHT COLUMN — Sidebar -->
+      </div>
       <div class="live-side">
-
-        <!-- Settings button -->
-        <button class="settings-btn" onclick="openSettings()" style="width:100%;justify-content:center">
-          ⚙ API Settings &amp; Live Data
-        </button>
-
-        <!-- TODAY'S FIXTURES -->
+        <button class="settings-btn" onclick="openSettings()" style="width:100%;justify-content:center">⚙ API Settings &amp; Live Data</button>
         <div class="lcard">
-          <div class="lcard-head">
-            <span class="lcard-title">Today's Fixtures</span>
-            <span class="lcard-badge badge-today">APR 26</span>
-          </div>
+          <div class="lcard-head"><span class="lcard-title">Today's Fixtures</span><span class="lcard-badge badge-today">APR 26</span></div>
           <div class="lcard-body">
             <div class="fixture-list">
-              <div class="fixture-item">
-                <span class="fi-date">16:00 IST</span>
-                <div>
-                  <div class="fi-teams">MI vs CSK</div>
-                  <div style="font-family:var(--f-mono);font-size:9px;color:var(--t3)">Wankhede, Mumbai</div>
-                </div>
-                <span class="fi-status fi-live">LIVE</span>
-              </div>
-              <div class="fixture-item">
-                <span class="fi-date">20:00 IST</span>
-                <div>
-                  <div class="fi-teams">RCB vs KKR</div>
-                  <div style="font-family:var(--f-mono);font-size:9px;color:var(--t3)">Chinnaswamy, Bengaluru</div>
-                </div>
-                <span class="fi-status fi-upcoming">7:30 PM</span>
-              </div>
+              <div class="fixture-item"><span class="fi-date">16:00 IST</span><div><div class="fi-teams">MI vs CSK</div><div style="font-family:var(--f-mono);font-size:9px;color:var(--t3)">Wankhede, Mumbai</div></div><span class="fi-status fi-live">LIVE</span></div>
+              <div class="fixture-item"><span class="fi-date">20:00 IST</span><div><div class="fi-teams">RCB vs KKR</div><div style="font-family:var(--f-mono);font-size:9px;color:var(--t3)">Chinnaswamy, Bengaluru</div></div><span class="fi-status fi-upcoming">7:30 PM</span></div>
             </div>
           </div>
         </div>
-
-        <!-- UPCOMING FIXTURES -->
-        <div class="lcard">
-          <div class="lcard-head">
-            <span class="lcard-title">Upcoming Matches</span>
-            <span class="lcard-badge badge-upcoming">NEXT 5</span>
-          </div>
-          <div class="lcard-body">
-            <div class="fixture-list">
-              <div class="fixture-item"><span class="fi-date">Apr 27</span><div><div class="fi-teams">SRH vs GT</div><div style="font-family:var(--f-mono);font-size:9px;color:var(--t3)">Rajiv Gandhi, Hyd</div></div><span class="fi-status fi-upcoming">20:00</span></div>
-              <div class="fixture-item"><span class="fi-date">Apr 27</span><div><div class="fi-teams">DC vs RR</div><div style="font-family:var(--f-mono);font-size:9px;color:var(--t3)">Arun Jaitley, Delhi</div></div><span class="fi-status fi-upcoming">16:00</span></div>
-              <div class="fixture-item"><span class="fi-date">Apr 28</span><div><div class="fi-teams">LSG vs PBKS</div><div style="font-family:var(--f-mono);font-size:9px;color:var(--t3)">BRSABV, Lucknow</div></div><span class="fi-status fi-upcoming">20:00</span></div>
-              <div class="fixture-item"><span class="fi-date">Apr 29</span><div><div class="fi-teams">MI vs KKR</div><div style="font-family:var(--f-mono);font-size:9px;color:var(--t3)">Wankhede, Mumbai</div></div><span class="fi-status fi-upcoming">20:00</span></div>
-              <div class="fixture-item"><span class="fi-date">Apr 30</span><div><div class="fi-teams">CSK vs SRH</div><div style="font-family:var(--f-mono);font-size:9px;color:var(--t3)">Chepauk, Chennai</div></div><span class="fi-status fi-upcoming">20:00</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- WEATHER WIDGET -->
         <div class="weather-card" id="weather-widget">
           <div class="weather-top">
-            <div>
-              <div class="weather-city" id="w-city">Mumbai</div>
-              <div class="weather-sub" id="w-venue">WANKHEDE STADIUM · MATCH DAY</div>
-            </div>
+            <div><div class="weather-city" id="w-city">Mumbai</div><div class="weather-sub" id="w-venue">WANKHEDE STADIUM · MATCH DAY</div></div>
             <div class="weather-icon" id="w-icon">⛅</div>
           </div>
           <div class="weather-temp" id="w-temp">31<span>°C</span></div>
@@ -922,41 +992,684 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
             <div class="wg-item"><div class="wg-val" id="w-vis">Good</div><div class="wg-lbl">Visibility</div></div>
             <div class="wg-item"><div class="wg-val" id="w-dew">24°C</div><div class="wg-lbl">Dew Point</div></div>
           </div>
-          <div class="weather-rain rain-low" id="w-rain">
-            ☀ Low chance of rain · Play expected without interruption
-          </div>
+          <div class="weather-rain rain-low" id="w-rain">☀ Low chance of rain · Play expected without interruption</div>
           <p style="font-family:var(--f-mono);font-size:9px;color:var(--t3);letter-spacing:0.06em;margin-top:8px;text-align:right">via Open-Meteo · Updates hourly</p>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        <!-- RECENT RESULTS -->
-        <div class="lcard">
-          <div class="lcard-head">
-            <span class="lcard-title">Recent Results</span>
-            <span class="lcard-badge badge-done">COMPLETED</span>
+<!-- ══ STAT LAB ══════════════════════════════════════════════ -->
+<div class="pane" id="pane-stats">
+  <div class="wrap">
+
+    <!-- Header -->
+    <div class="stat-lab-header">
+      <div class="stat-lab-bg-word" aria-hidden="true">STATS</div>
+      <div class="stat-lab-top">
+        <h2 class="stat-lab-title">STAT<br><em>LAB</em></h2>
+        <div class="stat-lab-desc">
+          Batting · Bowling · Fielding<br>
+          Partnerships · Keeping<br>
+          Match · Team · Stadium Records
+        </div>
+      </div>
+    </div>
+
+    <!-- Data loader -->
+    <div class="data-progress" id="data-progress-bar">
+      <button class="load-data-btn" id="load-btn" onclick="loadCricsheetData()">⚡ LOAD REAL DATA</button>
+      <div class="dp-bar-wrap"><div class="dp-bar" id="dp-bar"></div></div>
+      <span class="dp-count" id="dp-count">0 / 1209</span>
+      <span class="dp-text" id="dp-text">Click to load Cricsheet data from your repo</span>
+    </div>
+
+    <!-- Season filter -->
+    <div class="season-filter">
+      <span class="sf-label">Season</span>
+      <button class="sf-btn on" onclick="setSeason('all',this)">All Time</button>
+      <button class="sf-btn" onclick="setSeason('2026',this)">2026</button>
+      <button class="sf-btn" onclick="setSeason('2025',this)">2025</button>
+      <button class="sf-btn" onclick="setSeason('2024',this)">2024</button>
+      <button class="sf-btn" onclick="setSeason('2023',this)">2023</button>
+      <button class="sf-btn" onclick="setSeason('2022',this)">2022</button>
+      <button class="sf-btn" onclick="setSeason('2019',this)">2019</button>
+      <button class="sf-btn" onclick="setSeason('2016',this)">2016</button>
+      <button class="sf-btn" onclick="setSeason('2013',this)">2013</button>
+      <button class="sf-btn" onclick="setSeason('2008',this)">2008</button>
+    </div>
+
+    <!-- Category tabs -->
+    <div class="cat-tabs">
+      <button class="cat-tab on" onclick="showCat('batting',this)">🏏 Batting</button>
+      <button class="cat-tab" onclick="showCat('bowling',this)">🎳 Bowling</button>
+      <button class="cat-tab" onclick="showCat('fielding',this)">🤾 Fielding</button>
+      <button class="cat-tab" onclick="showCat('partnerships',this)">🤝 Partnerships</button>
+      <button class="cat-tab" onclick="showCat('keeping',this)">🧤 Keeping</button>
+      <button class="cat-tab" onclick="showCat('match',this)">📋 Match Records</button>
+      <button class="cat-tab" onclick="showCat('team',this)">🏆 Team Records</button>
+      <button class="cat-tab" onclick="showCat('stadium',this)">🏟 Stadiums</button>
+    </div>
+
+    <!-- ══ BATTING ══ -->
+    <div class="cat-panel on" id="cat-batting">
+      <!-- Top stat overview cards -->
+      <div class="stats-overview-grid">
+        <div class="stat-rec-card" style="--clr-a:var(--gold)">
+          <div class="src-label">Orange Cap</div>
+          <div class="src-value" id="s-orange-runs">741</div>
+          <div class="src-player" id="s-orange-player">Virat Kohli</div>
+          <div class="src-team" id="s-orange-team">Royal Challengers Bengaluru · 2016</div>
+          <div class="src-season">🧢</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--orange)">
+          <div class="src-label">Highest Score</div>
+          <div class="src-value" id="s-hi-score">175*</div>
+          <div class="src-player" id="s-hi-player">Chris Gayle</div>
+          <div class="src-team" id="s-hi-team">Royal Challengers Bengaluru · 2013</div>
+          <div class="src-season">🏏</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--green)">
+          <div class="src-label">Best Strike Rate</div>
+          <div class="src-value" id="s-best-sr">216.67</div>
+          <div class="src-player" id="s-best-sr-player">Andre Russell</div>
+          <div class="src-team" id="s-best-sr-team">Kolkata Knight Riders · 2019</div>
+          <div class="src-season">⚡</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--blue)">
+          <div class="src-label">Most Sixes (Career)</div>
+          <div class="src-value" id="s-most-sixes">357</div>
+          <div class="src-player" id="s-most-sixes-player">Chris Gayle</div>
+          <div class="src-team" id="s-most-sixes-team">Royal Challengers Bengaluru</div>
+          <div class="src-season">💥</div>
+        </div>
+      </div>
+
+      <div class="stats-two-col">
+        <!-- Left: Tables -->
+        <div class="stats-main">
+
+          <!-- Most Runs All Time -->
+          <div class="stat-card">
+            <div class="stat-card-head">
+              <div class="stat-card-title">Most Runs <span id="lb-runs-season-tag">· All Time</span></div>
+              <span class="stat-badge sb-bat">BATTING</span>
+            </div>
+            <table class="lb-table" id="lb-runs">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Inn</th><th style="text-align:right">Runs</th><th style="text-align:right">Avg</th><th style="text-align:right">SR</th><th style="text-align:right">100s</th><th style="text-align:right">50s</th></tr></thead>
+              <tbody id="lb-runs-body"></tbody>
+            </table>
           </div>
-          <div class="lcard-body">
-            <div class="fixture-list">
-              <div class="fixture-item"><span class="fi-date">Apr 25</span><div><div class="fi-teams">SRH vs DC</div><div style="font-family:var(--f-mono);font-size:9px;color:var(--green)">SRH won by 34 runs</div></div><span class="fi-status fi-done">DONE</span></div>
-              <div class="fixture-item"><span class="fi-date">Apr 25</span><div><div class="fi-teams">GT vs RR</div><div style="font-family:var(--f-mono);font-size:9px;color:var(--green)">RR won by 6 wkts</div></div><span class="fi-status fi-done">DONE</span></div>
-              <div class="fixture-item"><span class="fi-date">Apr 24</span><div><div class="fi-teams">MI vs LSG</div><div style="font-family:var(--f-mono);font-size:9px;color:var(--green)">MI won by 8 wkts</div></div><span class="fi-status fi-done">DONE</span></div>
+
+          <!-- Most Sixes -->
+          <div class="stat-card">
+            <div class="stat-card-head">
+              <div class="stat-card-title">Most Sixes</div>
+              <span class="stat-badge sb-bat">BATTING</span>
+            </div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Matches</th><th style="text-align:right">Sixes</th><th style="text-align:right">4s</th><th style="text-align:right">Bdry%</th></tr></thead>
+              <tbody id="lb-sixes-body"></tbody>
+            </table>
+          </div>
+
+          <!-- Best Batting Average -->
+          <div class="stat-card">
+            <div class="stat-card-head">
+              <div class="stat-card-title">Best Batting Average <span>min. 20 innings</span></div>
+              <span class="stat-badge sb-bat">BATTING</span>
+            </div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Inn</th><th style="text-align:right">Runs</th><th style="text-align:right">NO</th><th style="text-align:right">Avg</th><th style="text-align:right">HS</th></tr></thead>
+              <tbody id="lb-avg-body"></tbody>
+            </table>
+          </div>
+
+          <!-- Best Strike Rate -->
+          <div class="stat-card">
+            <div class="stat-card-head">
+              <div class="stat-card-title">Best Strike Rate <span>min. 500 balls faced</span></div>
+              <span class="stat-badge sb-bat">BATTING</span>
+            </div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Balls</th><th style="text-align:right">Runs</th><th style="text-align:right">SR</th><th style="text-align:right">6s</th></tr></thead>
+              <tbody id="lb-sr-body"></tbody>
+            </table>
+          </div>
+
+          <!-- Highest Scores -->
+          <div class="stat-card">
+            <div class="stat-card-head">
+              <div class="stat-card-title">Highest Individual Scores</div>
+              <span class="stat-badge sb-bat">INNINGS</span>
+            </div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Score</th><th style="text-align:right">Balls</th><th style="text-align:right">4s</th><th style="text-align:right">6s</th><th>Vs</th><th>Season</th></tr></thead>
+              <tbody id="lb-hs-body"></tbody>
+            </table>
+          </div>
+
+          <!-- Most Centuries -->
+          <div class="stat-card">
+            <div class="stat-card-head">
+              <div class="stat-card-title">Most Centuries (100+)</div>
+              <span class="stat-badge sb-bat">BATTING</span>
+            </div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">100s</th><th style="text-align:right">50s</th><th style="text-align:right">Inn</th><th style="text-align:right">Runs</th></tr></thead>
+              <tbody id="lb-100s-body"></tbody>
+            </table>
+          </div>
+
+          <!-- Phase-wise boundaries -->
+          <div class="stat-section-divider">
+            <span class="ssd-label">Phase-wise Boundary Analysis</span>
+            <div class="ssd-line"></div>
+          </div>
+          <div class="phase-grid">
+            <div class="phase-card">
+              <div class="phase-name">Powerplay</div>
+              <div class="phase-overs">Overs 1–6</div>
+              <div class="phase-val" style="color:var(--blue)">38%</div>
+              <div class="phase-lbl">of all boundaries</div>
+            </div>
+            <div class="phase-card">
+              <div class="phase-name">Middle Overs</div>
+              <div class="phase-overs">Overs 7–15</div>
+              <div class="phase-val" style="color:var(--gold)">29%</div>
+              <div class="phase-lbl">of all boundaries</div>
+            </div>
+            <div class="phase-card">
+              <div class="phase-name">Death Overs</div>
+              <div class="phase-overs">Overs 16–20</div>
+              <div class="phase-val" style="color:var(--orange)">33%</div>
+              <div class="phase-lbl">of all boundaries</div>
             </div>
           </div>
+
+          <!-- Most ducks -->
+          <div class="stat-card">
+            <div class="stat-card-head">
+              <div class="stat-card-title">Most Ducks</div>
+              <span class="stat-badge sb-bat">BATTING</span>
+            </div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Ducks</th><th style="text-align:right">Inn</th><th style="text-align:right">Duck%</th></tr></thead>
+              <tbody id="lb-ducks-body"></tbody>
+            </table>
+          </div>
+
         </div>
 
-      </div><!-- /live-side -->
-    </div><!-- /live-grid -->
-  </div><!-- /wrap -->
-</div><!-- /pane-live -->
+        <!-- Right: Charts -->
+        <div class="stats-side">
 
-<!-- PLACEHOLDER MODULES (Steps 3–10) -->
-<div class="pane" id="pane-stats"><div class="wrap"><div class="mod-header"><h2 class="mod-title">STAT<br><em>LAB</em></h2><div class="mod-desc">Batting · Bowling · Fielding<br>Partnerships · Keeping<br>Match & Team Records</div></div><div class="mod-placeholder"><div class="mod-bg-num">02</div><div class="mod-content"><span class="mod-icon">📊</span><p class="mod-step">Step 3 — Coming Next</p><p class="mod-label">STAT LAB</p><p class="mod-sub">Orange Cap · Purple Cap · 100+ stat categories across all 19 seasons</p></div></div></div></div>
-<div class="pane" id="pane-teams"><div class="wrap"><div class="mod-header"><h2 class="mod-title">TEAM<br><em>WAR ROOM</em></h2><div class="mod-desc">Win patterns · Venue records<br>Form heatmap</div></div><div class="mod-placeholder"><div class="mod-bg-num">03</div><div class="mod-content"><span class="mod-icon">⚔️</span><p class="mod-step">Step 5</p><p class="mod-label">WAR ROOM</p><p class="mod-sub">Team analytics, venue intelligence and franchise deep dives</p></div></div></div></div>
-<div class="pane" id="pane-rivalry"><div class="wrap"><div class="mod-header"><h2 class="mod-title">RIVALRY<br><em>ARENA</em></h2><div class="mod-desc">H2H battles · Player vs Player</div></div><div class="mod-placeholder"><div class="mod-bg-num">04</div><div class="mod-content"><span class="mod-icon">🔥</span><p class="mod-step">Step 6</p><p class="mod-label">RIVALRY ARENA</p><p class="mod-sub">Head-to-head team battles and batter vs bowler matchups</p></div></div></div></div>
-<div class="pane" id="pane-vault"><div class="wrap"><div class="mod-header"><h2 class="mod-title">TIME<br><em>VAULT</em></h2><div class="mod-desc">All 19 IPL seasons · Finals<br>Champions · Season compare</div></div><div class="mod-placeholder"><div class="mod-bg-num">05</div><div class="mod-content"><span class="mod-icon">🗄️</span><p class="mod-step">Step 7</p><p class="mod-label">TIME VAULT</p><p class="mod-sub">Season-by-season archive 2008–2026</p></div></div></div></div>
-<div class="pane" id="pane-match"><div class="wrap"><div class="mod-header"><h2 class="mod-title">MATCH<br><em>CENTER</em></h2><div class="mod-desc">Live scorecard · Over chart<br>Worm chart · Win probability</div></div><div class="mod-placeholder"><div class="mod-bg-num">06</div><div class="mod-content"><span class="mod-icon">🎯</span><p class="mod-step">Step 8</p><p class="mod-label">MATCH CENTER</p><p class="mod-sub">Ball-by-ball scorecard, over timeline and live win probability graph</p></div></div></div></div>
-<div class="pane" id="pane-squad"><div class="wrap"><div class="mod-header"><h2 class="mod-title">SQUAD<br><em>ROOM</em></h2><div class="mod-desc">All 10 franchises · Squads<br>Injuries · Replacements<br>Team-themed backgrounds</div></div><div class="mod-placeholder"><div class="mod-bg-num">07</div><div class="mod-content"><span class="mod-icon">👥</span><p class="mod-step">Step 4</p><p class="mod-label">SQUAD ROOM</p><p class="mod-sub">Full rosters with each team's official colour theme and logo watermark</p></div></div></div></div>
-<div class="pane" id="pane-facts"><div class="wrap"><div class="mod-header"><h2 class="mod-title">IPL<br><em>FACTS</em></h2><div class="mod-desc">Trivia · Super Overs<br>IPL Firsts · Daily Did You Know</div></div><div class="mod-placeholder"><div class="mod-bg-num">08</div><div class="mod-content"><span class="mod-icon">💡</span><p class="mod-step">Step 9</p><p class="mod-label">IPL FACTS</p><p class="mod-sub">Quirky records, Super Over history, IPL firsts and daily rotating trivia</p></div></div></div></div>
-<div class="pane" id="pane-cards"><div class="wrap"><div class="mod-header"><h2 class="mod-title">STAT<br><em>CARDS</em></h2><div class="mod-desc">Player cards · Clash cards<br>1080×1080 PNG download</div></div><div class="mod-placeholder"><div class="mod-bg-num">09</div><div class="mod-content"><span class="mod-icon">🖼️</span><p class="mod-step">Step 10 — Final</p><p class="mod-label">STAT CARDS</p><p class="mod-sub">Generate downloadable infographic cards — free, no login needed</p></div></div></div></div>
+          <!-- Top Run Scorers Chart -->
+          <div class="chart-card">
+            <div class="chart-title">Top Run Scorers</div>
+            <div class="chart-wrap" style="height:280px">
+              <canvas id="chart-runs"></canvas>
+            </div>
+          </div>
+
+          <!-- Strike Rate vs Average scatter -->
+          <div class="chart-card">
+            <div class="chart-title">Sixes Leaders</div>
+            <div class="chart-wrap" style="height:260px">
+              <canvas id="chart-sixes"></canvas>
+            </div>
+          </div>
+
+          <!-- Phase doughnut -->
+          <div class="chart-card">
+            <div class="chart-title">Boundaries by Phase</div>
+            <div class="chart-wrap" style="height:220px">
+              <canvas id="chart-phase"></canvas>
+            </div>
+          </div>
+
+          <!-- Centuries comparison -->
+          <div class="chart-card">
+            <div class="chart-title">Centuries vs Fifties (Top 8)</div>
+            <div class="chart-wrap" style="height:240px">
+              <canvas id="chart-100s"></canvas>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ BOWLING ══ -->
+    <div class="cat-panel" id="cat-bowling">
+      <div class="stats-overview-grid">
+        <div class="stat-rec-card" style="--clr-a:var(--purple)">
+          <div class="src-label">Purple Cap</div>
+          <div class="src-value">32</div>
+          <div class="src-player">Harshal Patel</div>
+          <div class="src-team">Royal Challengers Bengaluru · 2021</div>
+          <div class="src-season">🎳</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--green)">
+          <div class="src-label">Best Economy</div>
+          <div class="src-value">5.83</div>
+          <div class="src-player">Rashid Khan</div>
+          <div class="src-team">Sunrisers Hyderabad</div>
+          <div class="src-season">💨</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--red)">
+          <div class="src-label">Best Figures</div>
+          <div class="src-value">6/14</div>
+          <div class="src-player">Sohail Tanvir</div>
+          <div class="src-team">Rajasthan Royals · 2008</div>
+          <div class="src-season">🔥</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--blue)">
+          <div class="src-label">Most Wickets (Career)</div>
+          <div class="src-value">187</div>
+          <div class="src-player">Yuzvendra Chahal</div>
+          <div class="src-team">RCB / RR / PBKS</div>
+          <div class="src-season">🏆</div>
+        </div>
+      </div>
+
+      <div class="stats-two-col">
+        <div class="stats-main">
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Most Wickets — All Time</div><span class="stat-badge sb-bowl">BOWLING</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">M</th><th style="text-align:right">Wkts</th><th style="text-align:right">Avg</th><th style="text-align:right">Eco</th><th style="text-align:right">SR</th><th style="text-align:right">BBI</th></tr></thead>
+              <tbody id="lb-wickets-body"></tbody>
+            </table>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Best Economy Rate <span>min. 30 overs</span></div><span class="stat-badge sb-bowl">BOWLING</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Overs</th><th style="text-align:right">Runs</th><th style="text-align:right">Wkts</th><th style="text-align:right">Eco</th></tr></thead>
+              <tbody id="lb-eco-body"></tbody>
+            </table>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Best Bowling Figures (Innings)</div><span class="stat-badge sb-bowl">BOWLING</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Figures</th><th style="text-align:right">Eco</th><th>Vs</th><th>Season</th></tr></thead>
+              <tbody id="lb-bbi-body"></tbody>
+            </table>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Most 4-Wicket Hauls</div><span class="stat-badge sb-bowl">BOWLING</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">4W</th><th style="text-align:right">5W</th><th style="text-align:right">Total Wkts</th></tr></thead>
+              <tbody id="lb-4w-body"></tbody>
+            </table>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Most Dot Balls (Career)</div><span class="stat-badge sb-bowl">BOWLING</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Dots</th><th style="text-align:right">Overs</th><th style="text-align:right">Dot%</th></tr></thead>
+              <tbody id="lb-dots-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="stats-side">
+          <div class="chart-card">
+            <div class="chart-title">Top Wicket Takers</div>
+            <div class="chart-wrap" style="height:280px"><canvas id="chart-wickets"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Economy Rate Leaders</div>
+            <div class="chart-wrap" style="height:260px"><canvas id="chart-eco"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Wickets by Phase</div>
+            <div class="chart-wrap" style="height:220px"><canvas id="chart-wkt-phase"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FIELDING ══ -->
+    <div class="cat-panel" id="cat-fielding">
+      <div class="stats-overview-grid">
+        <div class="stat-rec-card" style="--clr-a:var(--green)">
+          <div class="src-label">Most Catches (Career)</div>
+          <div class="src-value">122</div>
+          <div class="src-player">Suresh Raina</div>
+          <div class="src-team">Chennai Super Kings</div>
+          <div class="src-season">🤾</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--orange)">
+          <div class="src-label">Most Run-Outs</div>
+          <div class="src-value">24</div>
+          <div class="src-player">MS Dhoni</div>
+          <div class="src-team">Chennai Super Kings</div>
+          <div class="src-season">🏃</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--blue)">
+          <div class="src-label">Most Catches (Innings)</div>
+          <div class="src-value">4</div>
+          <div class="src-player">Multiple Players</div>
+          <div class="src-team">IPL Record</div>
+          <div class="src-season">🏅</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--gold)">
+          <div class="src-label">Best Catch Efficiency</div>
+          <div class="src-value">94.2%</div>
+          <div class="src-player">Kolkata Knight Riders</div>
+          <div class="src-team">Team Record · 2021</div>
+          <div class="src-season">✅</div>
+        </div>
+      </div>
+      <div class="stats-two-col">
+        <div class="stats-main">
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Most Catches — Career</div><span class="stat-badge sb-field">FIELDING</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Catches</th><th style="text-align:right">Matches</th><th style="text-align:right">Per Match</th></tr></thead>
+              <tbody id="lb-catches-body"></tbody>
+            </table>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Most Run-Outs</div><span class="stat-badge sb-field">FIELDING</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Run Outs</th><th style="text-align:right">Matches</th></tr></thead>
+              <tbody id="lb-runouts-body"></tbody>
+            </table>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Team Catch Efficiency</div><span class="stat-badge sb-field">TEAM</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Team</th><th style="text-align:right">Caught</th><th style="text-align:right">Dropped</th><th style="text-align:right">Efficiency</th></tr></thead>
+              <tbody id="lb-catch-eff-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="stats-side">
+          <div class="chart-card">
+            <div class="chart-title">Top Fielders by Catches</div>
+            <div class="chart-wrap" style="height:280px"><canvas id="chart-catches"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Catch Efficiency by Team</div>
+            <div class="chart-wrap" style="height:260px"><canvas id="chart-catch-eff"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PARTNERSHIPS ══ -->
+    <div class="cat-panel" id="cat-partnerships">
+      <div class="stats-overview-grid">
+        <div class="stat-rec-card" style="--clr-a:var(--orange)">
+          <div class="src-label">Highest Partnership</div>
+          <div class="src-value">229</div>
+          <div class="src-player">Kohli &amp; Gayle</div>
+          <div class="src-team">RCB vs PBKS · 2012</div>
+          <div class="src-season">🤝</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--gold)">
+          <div class="src-label">Century Partnerships</div>
+          <div class="src-value">280+</div>
+          <div class="src-player">All-time IPL Record</div>
+          <div class="src-team">2008 – 2026</div>
+          <div class="src-season">💯</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--purple)">
+          <div class="src-label">Double Century Partners</div>
+          <div class="src-value">3</div>
+          <div class="src-player">200+ run partnerships</div>
+          <div class="src-team">IPL History</div>
+          <div class="src-season">🏆</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--green)">
+          <div class="src-label">Best 1st Wicket Partner</div>
+          <div class="src-value">229</div>
+          <div class="src-player">Kohli &amp; Gayle</div>
+          <div class="src-team">RCB</div>
+          <div class="src-season">1️⃣</div>
+        </div>
+      </div>
+      <div class="stats-two-col">
+        <div class="stats-main">
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Highest Partnerships by Runs</div><span class="stat-badge sb-part">PARTNERSHIP</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Pair</th><th style="text-align:right">Runs</th><th style="text-align:right">Balls</th><th style="text-align:right">SR</th><th>Wicket</th><th>Season</th></tr></thead>
+              <tbody id="lb-parts-body"></tbody>
+            </table>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Highest Partnership by Wicket</div><span class="stat-badge sb-part">PARTNERSHIP</span></div>
+            <table class="lb-table">
+              <thead><tr><th>Wkt</th><th>Pair</th><th style="text-align:right">Runs</th><th>Team</th><th>Season</th></tr></thead>
+              <tbody id="lb-parts-wkt-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="stats-side">
+          <div class="chart-card">
+            <div class="chart-title">Top 10 Partnerships</div>
+            <div class="chart-wrap" style="height:280px"><canvas id="chart-parts"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ KEEPING ══ -->
+    <div class="cat-panel" id="cat-keeping">
+      <div class="stats-overview-grid">
+        <div class="stat-rec-card" style="--clr-a:var(--blue)">
+          <div class="src-label">Most Dismissals</div>
+          <div class="src-value">172</div>
+          <div class="src-player">MS Dhoni</div>
+          <div class="src-team">Chennai Super Kings</div>
+          <div class="src-season">🧤</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--green)">
+          <div class="src-label">Most Stumpings</div>
+          <div class="src-value">42</div>
+          <div class="src-player">MS Dhoni</div>
+          <div class="src-team">Chennai Super Kings</div>
+          <div class="src-season">⚡</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--gold)">
+          <div class="src-label">Most Catches (Keeper)</div>
+          <div class="src-value">130</div>
+          <div class="src-player">MS Dhoni</div>
+          <div class="src-team">Chennai Super Kings</div>
+          <div class="src-season">🏅</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--orange)">
+          <div class="src-label">Most Dismissals (Innings)</div>
+          <div class="src-value">5</div>
+          <div class="src-player">Multiple Keepers</div>
+          <div class="src-team">IPL Record</div>
+          <div class="src-season">💥</div>
+        </div>
+      </div>
+      <div class="stats-two-col">
+        <div class="stats-main">
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Most Total Dismissals</div><span class="stat-badge sb-keep">KEEPING</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Ct</th><th style="text-align:right">St</th><th style="text-align:right">Total</th><th style="text-align:right">Matches</th></tr></thead>
+              <tbody id="lb-keep-body"></tbody>
+            </table>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Most Stumpings</div><span class="stat-badge sb-keep">KEEPING</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Stumpings</th><th style="text-align:right">Matches</th></tr></thead>
+              <tbody id="lb-stump-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="stats-side">
+          <div class="chart-card">
+            <div class="chart-title">Keeper Dismissals Comparison</div>
+            <div class="chart-wrap" style="height:280px"><canvas id="chart-keep"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MATCH RECORDS ══ -->
+    <div class="cat-panel" id="cat-match">
+      <div class="stats-overview-grid">
+        <div class="stat-rec-card" style="--clr-a:var(--orange)">
+          <div class="src-label">Highest Team Total</div>
+          <div class="src-value">287/2</div>
+          <div class="src-player">Royal Challengers Bengaluru</div>
+          <div class="src-team">vs PBKS · 2016</div>
+          <div class="src-season">🔝</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--red)">
+          <div class="src-label">Lowest Team Total</div>
+          <div class="src-value">49</div>
+          <div class="src-player">Rajasthan Royals</div>
+          <div class="src-team">vs KKR · 2009</div>
+          <div class="src-season">📉</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--gold)">
+          <div class="src-label">Highest Match Aggregate</div>
+          <div class="src-value">489</div>
+          <div class="src-player">CSK vs RCB</div>
+          <div class="src-team">2008</div>
+          <div class="src-season">💥</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--green)">
+          <div class="src-label">Largest Win (Runs)</div>
+          <div class="src-value">146 runs</div>
+          <div class="src-player">Mumbai Indians</div>
+          <div class="src-team">vs Delhi Daredevils · 2017</div>
+          <div class="src-season">🏆</div>
+        </div>
+      </div>
+      <div class="stats-two-col">
+        <div class="stats-main">
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Highest Team Totals</div><span class="stat-badge sb-match">MATCH</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Team</th><th style="text-align:right">Score</th><th style="text-align:right">Overs</th><th>Vs</th><th>Venue</th><th>Season</th></tr></thead>
+              <tbody id="lb-totals-body"></tbody>
+            </table>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Lowest Team Totals</div><span class="stat-badge sb-match">MATCH</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Team</th><th style="text-align:right">Score</th><th style="text-align:right">Overs</th><th>Vs</th><th>Season</th></tr></thead>
+              <tbody id="lb-low-body"></tbody>
+            </table>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Largest Victories by Runs</div><span class="stat-badge sb-match">MATCH</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Winner</th><th style="text-align:right">Margin</th><th>Vs</th><th>Season</th></tr></thead>
+              <tbody id="lb-margins-body"></tbody>
+            </table>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Most Extras in an Innings</div><span class="stat-badge sb-match">MATCH</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Team</th><th style="text-align:right">Extras</th><th style="text-align:right">Wides</th><th style="text-align:right">NB</th><th>Vs</th><th>Season</th></tr></thead>
+              <tbody id="lb-extras-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="stats-side">
+          <div class="chart-card">
+            <div class="chart-title">Highest Totals — Top 10</div>
+            <div class="chart-wrap" style="height:280px"><canvas id="chart-totals"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Win Method Distribution</div>
+            <div class="chart-wrap" style="height:220px"><canvas id="chart-win-method"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TEAM RECORDS ══ -->
+    <div class="cat-panel" id="cat-team">
+      <div class="stats-overview-grid">
+        <div class="stat-rec-card" style="--clr-a:var(--gold)">
+          <div class="src-label">Most IPL Titles</div>
+          <div class="src-value">5</div>
+          <div class="src-player">Mumbai Indians</div>
+          <div class="src-team">2013 · 2015 · 2017 · 2019 · 2020</div>
+          <div class="src-season">🏆</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--orange)">
+          <div class="src-label">Best Team Win %</div>
+          <div class="src-value">59.8%</div>
+          <div class="src-player">Mumbai Indians</div>
+          <div class="src-team">All-time · 279 matches</div>
+          <div class="src-season">📊</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--green)">
+          <div class="src-label">Highest Team Avg (Bat)</div>
+          <div class="src-value">31.4</div>
+          <div class="src-player">Mumbai Indians</div>
+          <div class="src-team">Batting Average · All-time</div>
+          <div class="src-season">🏏</div>
+        </div>
+        <div class="stat-rec-card" style="--clr-a:var(--purple)">
+          <div class="src-label">Best Bowling Avg</div>
+          <div class="src-value">22.1</div>
+          <div class="src-player">Mumbai Indians</div>
+          <div class="src-team">Bowling Average · All-time</div>
+          <div class="src-season">🎳</div>
+        </div>
+      </div>
+      <div class="stats-two-col">
+        <div class="stats-main">
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">All-Time Team Records</div><span class="stat-badge sb-team">TEAM</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Team</th><th style="text-align:right">M</th><th style="text-align:right">W</th><th style="text-align:right">L</th><th style="text-align:right">Win%</th><th style="text-align:right">Titles</th></tr></thead>
+              <tbody id="lb-team-body"></tbody>
+            </table>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-head"><div class="stat-card-title">Individual Match Records</div><span class="stat-badge sb-team">INDIVIDUAL</span></div>
+            <table class="lb-table">
+              <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Matches</th><th style="text-align:right">As Captain</th><th>Teams</th></tr></thead>
+              <tbody id="lb-indiv-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="stats-side">
+          <div class="chart-card">
+            <div class="chart-title">Win % by Franchise</div>
+            <div class="chart-wrap" style="height:300px"><canvas id="chart-team-wins"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ STADIUMS ══ -->
+    <div class="cat-panel" id="cat-stadium">
+      <div class="stat-section-divider" style="margin-top:0">
+        <span class="ssd-label">All IPL Stadiums — Win Ratios & Records</span>
+        <div class="ssd-line"></div>
+      </div>
+      <div class="stadium-grid" id="stadium-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+  </div><!-- /wrap -->
+</div><!-- /pane-stats -->
+
+<!-- PLACEHOLDER MODULES -->
+<div class="pane" id="pane-teams"><div class="wrap"><div class="mod-header"><h2 class="mod-title">TEAM<br><em>WAR ROOM</em></h2><div class="mod-desc">Win patterns · Venue records<br>Form heatmap</div></div><div class="mod-placeholder"><div class="mod-bg-num">05</div><div class="mod-content"><span class="mod-icon">⚔️</span><p class="mod-step">Step 5</p><p class="mod-label">WAR ROOM</p><p class="mod-sub">Team analytics, venue intelligence and franchise deep dives</p></div></div></div></div>
+<div class="pane" id="pane-rivalry"><div class="wrap"><div class="mod-header"><h2 class="mod-title">RIVALRY<br><em>ARENA</em></h2><div class="mod-desc">H2H battles · Player vs Player</div></div><div class="mod-placeholder"><div class="mod-bg-num">06</div><div class="mod-content"><span class="mod-icon">🔥</span><p class="mod-step">Step 6</p><p class="mod-label">RIVALRY ARENA</p><p class="mod-sub">Head-to-head team battles and batter vs bowler matchups</p></div></div></div></div>
+<div class="pane" id="pane-vault"><div class="wrap"><div class="mod-header"><h2 class="mod-title">TIME<br><em>VAULT</em></h2><div class="mod-desc">All 19 IPL seasons archived</div></div><div class="mod-placeholder"><div class="mod-bg-num">07</div><div class="mod-content"><span class="mod-icon">🗄️</span><p class="mod-step">Step 7</p><p class="mod-label">TIME VAULT</p><p class="mod-sub">Season-by-season archive 2008–2026</p></div></div></div></div>
+<div class="pane" id="pane-match"><div class="wrap"><div class="mod-header"><h2 class="mod-title">MATCH<br><em>CENTER</em></h2><div class="mod-desc">Live scorecard · Over chart</div></div><div class="mod-placeholder"><div class="mod-bg-num">08</div><div class="mod-content"><span class="mod-icon">🎯</span><p class="mod-step">Step 8</p><p class="mod-label">MATCH CENTER</p><p class="mod-sub">Ball-by-ball scorecard, over timeline and live win probability graph</p></div></div></div></div>
+<div class="pane" id="pane-squad"><div class="wrap"><div class="mod-header"><h2 class="mod-title">SQUAD<br><em>ROOM</em></h2><div class="mod-desc">All 10 franchises · Squads</div></div><div class="mod-placeholder"><div class="mod-bg-num">04</div><div class="mod-content"><span class="mod-icon">👥</span><p class="mod-step">Step 4</p><p class="mod-label">SQUAD ROOM</p><p class="mod-sub">Full rosters with each team's official colour theme and logo watermark</p></div></div></div></div>
+<div class="pane" id="pane-facts"><div class="wrap"><div class="mod-header"><h2 class="mod-title">IPL<br><em>FACTS</em></h2><div class="mod-desc">Trivia · Super Overs · Daily Did You Know</div></div><div class="mod-placeholder"><div class="mod-bg-num">09</div><div class="mod-content"><span class="mod-icon">💡</span><p class="mod-step">Step 9</p><p class="mod-label">IPL FACTS</p><p class="mod-sub">Quirky records, Super Over history, IPL firsts and daily rotating trivia</p></div></div></div></div>
+<div class="pane" id="pane-cards"><div class="wrap"><div class="mod-header"><h2 class="mod-title">STAT<br><em>CARDS</em></h2><div class="mod-desc">Player cards · Clash cards · PNG download</div></div><div class="mod-placeholder"><div class="mod-bg-num">10</div><div class="mod-content"><span class="mod-icon">🖼️</span><p class="mod-step">Step 10 — Final</p><p class="mod-label">STAT CARDS</p><p class="mod-sub">Generate downloadable infographic cards — free, no login needed</p></div></div></div></div>
 
 <!-- FOOTER -->
 <footer id="footer">
@@ -969,7 +1682,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         <a href="#" onclick="switchMod('stats');return false">Stat Lab</a>
         <a href="#" onclick="switchMod('squad');return false">Squads</a>
       </div>
-      <p class="footer-note">Data: Cricsheet.org · CricketData.org · Open-Meteo<br>HTML · CSS · Vanilla JS · GitHub Pages<br>© 2026 IPL Deck · Not affiliated with BCCI or IPL</p>
+      <p class="footer-note">Data: Cricsheet.org · CricketData.org · Open-Meteo<br>HTML · CSS · Vanilla JS · Chart.js · GitHub Pages<br>© 2026 IPL Deck · Not affiliated with BCCI or IPL</p>
     </div>
   </div>
 </footer>
@@ -978,12 +1691,12 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 /* ── Cursor ─────────────────────────────────── */
 const cur=document.getElementById('cursor');
 document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px'});
-document.querySelectorAll('a,button,.qcard,.score-chip,.fixture-item,.lcard,.logo').forEach(el=>{
+document.querySelectorAll('a,button,.qcard,.score-chip,.fixture-item,.lcard,.logo,.stat-rec-card,.stadium-card').forEach(el=>{
   el.addEventListener('mouseenter',()=>cur.classList.add('big'));
   el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
 });
 
-/* ── Module switching ───────────────────────── */
+/* ── Module switching ─────────────────────── */
 const BTNS=document.querySelectorAll('.nb');
 const PANES=document.querySelectorAll('.pane');
 function switchMod(id){
@@ -991,22 +1704,21 @@ function switchMod(id){
   PANES.forEach(p=>p.classList.toggle('on',p.id==='pane-'+id));
   window.scrollTo({top:0,behavior:'smooth'});
   try{localStorage.setItem('ipl-deck-mod',id)}catch(e){}
+  if(id==='stats' && !chartsBuilt) buildCharts();
 }
 BTNS.forEach(b=>b.addEventListener('click',()=>switchMod(b.dataset.m)));
 try{const s=localStorage.getItem('ipl-deck-mod');if(s)switchMod(s)}catch(e){}
 
-/* ── Settings drawer ────────────────────────── */
+/* ── Settings drawer ─────────────────────── */
 function openSettings(){
   document.getElementById('settings-drawer').classList.add('open');
   document.getElementById('settings-overlay').classList.add('open');
-  // Load saved key
   try{
     const k=localStorage.getItem('ipl-deck-apikey');
     if(k)document.getElementById('api-key-input').value=k;
     const u=parseInt(localStorage.getItem('ipl-deck-usage')||'0');
     document.getElementById('usage-text').textContent=u+' / 100 requests';
     document.getElementById('usage-bar').style.width=Math.min(u,100)+'%';
-    document.getElementById('usage-bar').style.background=u>80?'var(--red)':u>50?'var(--gold)':'var(--green)';
   }catch(e){}
 }
 function closeSettings(){
@@ -1021,10 +1733,10 @@ function saveApiKey(){
     document.getElementById('api-status').style.display='block';
     document.getElementById('api-banner').style.display='none';
     setTimeout(()=>{document.getElementById('api-status').style.display='none'},3000);
-  }catch(e){alert('Could not save. Please allow LocalStorage in your browser settings.')}
+  }catch(e){alert('Could not save.')}
 }
 
-/* ── NRR Calculator ─────────────────────────── */
+/* ── NRR Calc ─────────────────────────────── */
 function calcNRR(){
   const rf=parseFloat(document.getElementById('c-runs-for').value)||0;
   const of=parseFloat(document.getElementById('c-overs-for').value)||20;
@@ -1034,7 +1746,6 @@ function calcNRR(){
   const mp=parseFloat(document.getElementById('c-matches-played').value)||1;
   if(!rf||!ra){alert('Please fill in all fields.');return;}
   const matchNRR=(rf/of)-(ra/oa);
-  // Weighted average approximation
   const newNRR=((cn*mp)+matchNRR)/(mp+1);
   const delta=newNRR-cn;
   const res=document.getElementById('calc-result');
@@ -1046,27 +1757,13 @@ function calcNRR(){
   res.classList.add('show');
 }
 
-/* ── Weather fetch (Open-Meteo, free, no key) ── */
-const VENUES={
-  'Mumbai':{lat:19.0452,lon:72.8277,icon:'⛅',stadium:'WANKHEDE STADIUM'},
-  'Chennai':{lat:13.0642,lon:80.2785,icon:'☀️',stadium:'CHEPAUK STADIUM'},
-  'Bengaluru':{lat:12.9791,lon:77.5490,icon:'🌤',stadium:'CHINNASWAMY STADIUM'},
-  'Kolkata':{lat:22.5645,lon:88.3433,icon:'⛅',stadium:'EDEN GARDENS'},
-  'Hyderabad':{lat:17.4065,lon:78.5480,icon:'☀️',stadium:'RAJIV GANDHI INT. STADIUM'},
-  'Delhi':{lat:28.6448,lon:77.2167,icon:'🌤',stadium:'ARUN JAITLEY STADIUM'},
-  'Jaipur':{lat:26.8516,lon:75.8069,icon:'☀️',stadium:'SAWAI MANSINGH STADIUM'},
-  'Lucknow':{lat:26.8574,lon:80.9394,icon:'⛅',stadium:'BRSABV EKANA STADIUM'},
-  'Ahmedabad':{lat:23.0707,lon:72.5211,icon:'☀️',stadium:'NARENDRA MODI STADIUM'},
-  'Mohali':{lat:30.6942,lon:76.7434,icon:'🌤',stadium:'PCA STADIUM'}
-};
-
+/* ── Weather ─────────────────────────────── */
+const VENUES={'Mumbai':{lat:19.0452,lon:72.8277,icon:'⛅',stadium:'WANKHEDE STADIUM'},'Chennai':{lat:13.0642,lon:80.2785,icon:'☀️',stadium:'CHEPAUK STADIUM'},'Bengaluru':{lat:12.9791,lon:77.549,icon:'🌤',stadium:'CHINNASWAMY STADIUM'},'Kolkata':{lat:22.5645,lon:88.3433,icon:'⛅',stadium:'EDEN GARDENS'},'Hyderabad':{lat:17.4065,lon:78.548,icon:'☀️',stadium:'RAJIV GANDHI STADIUM'},'Delhi':{lat:28.6448,lon:77.2167,icon:'🌤',stadium:'ARUN JAITLEY STADIUM'}};
 async function fetchWeather(city){
   const v=VENUES[city]||VENUES['Mumbai'];
   try{
     const url=`https://api.open-meteo.com/v1/forecast?latitude=${v.lat}&longitude=${v.lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation_probability,dew_point_2m&wind_speed_unit=kmh&timezone=Asia/Kolkata`;
-    const r=await fetch(url);
-    const d=await r.json();
-    const c=d.current;
+    const r=await fetch(url);const d=await r.json();const c=d.current;
     document.getElementById('w-city').textContent=city;
     document.getElementById('w-venue').textContent=v.stadium+' · MATCH DAY';
     document.getElementById('w-icon').textContent=v.icon;
@@ -1076,26 +1773,699 @@ async function fetchWeather(city){
     document.getElementById('w-dew').textContent=Math.round(c.dew_point_2m)+'°C';
     document.getElementById('w-vis').textContent=c.relative_humidity_2m>85?'Hazy':'Good';
     const pp=c.precipitation_probability||0;
-    const rainEl=document.getElementById('w-rain');
-    if(pp<20){rainEl.className='weather-rain rain-low';rainEl.textContent='☀ Low chance of rain ('+pp+'%) · Play expected without interruption'}
-    else if(pp<55){rainEl.className='weather-rain rain-mid';rainEl.textContent='🌦 Moderate rain chance ('+pp+'%) · Watch for Duckworth-Lewis'}
-    else{rainEl.className='weather-rain rain-high';rainEl.textContent='🌧 High rain probability ('+pp+'%) · Match may be affected'}
+    const rEl=document.getElementById('w-rain');
+    if(pp<20){rEl.className='weather-rain rain-low';rEl.textContent='☀ Low chance of rain ('+pp+'%) · Play expected'}
+    else if(pp<55){rEl.className='weather-rain rain-mid';rEl.textContent='🌦 Moderate rain chance ('+pp+'%) · Watch DLS'}
+    else{rEl.className='weather-rain rain-high';rEl.textContent='🌧 High rain probability ('+pp+'%) · Match may be affected'}
+  }catch(e){}
+}
+
+/* ── Stat Lab: Category tabs ─────────────── */
+function showCat(id,btn){
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.cat-panel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('cat-'+id).classList.add('on');
+  if(!chartsBuilt)buildCharts();
+}
+
+/* ── Season filter ───────────────────────── */
+let currentSeason='all';
+function setSeason(s,btn){
+  currentSeason=s;
+  document.querySelectorAll('.sf-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  populateTables(STAT_DATA);
+}
+
+/* ══════════════════════════════════════════
+   SAMPLE DATA (shown immediately)
+   Real data loads from Cricsheet when user clicks "Load Real Data"
+══════════════════════════════════════════ */
+const STAT_DATA={
+  runs:[
+    {rank:1,player:'Virat Kohli',team:'RCB',inn:237,runs:8004,avg:37.56,sr:131.2,hundreds:8,fifties:55},
+    {rank:2,player:'Suresh Raina',team:'CSK/GL',inn:196,runs:5528,avg:33.34,sr:136.7,hundreds:1,fifties:38},
+    {rank:3,player:'Rohit Sharma',team:'MI',inn:243,runs:6211,avg:29.62,sr:130.5,hundreds:2,fifties:43},
+    {rank:4,player:'David Warner',team:'SRH/DC',inn:176,runs:6397,avg:42.10,sr:139.9,hundreds:4,fifties:58},
+    {rank:5,player:'Shikhar Dhawan',team:'DC/SRH',inn:206,runs:6244,avg:34.87,sr:127.4,hundreds:2,fifties:50},
+    {rank:6,player:'AB de Villiers',team:'RCB',inn:154,runs:5162,avg:39.70,sr:151.7,hundreds:3,fifties:40},
+    {rank:7,player:'MS Dhoni',team:'CSK',inn:250,runs:5082,avg:39.24,sr:135.2,hundreds:0,fifties:24},
+    {rank:8,player:'Chris Gayle',team:'RCB/PBKS',inn:142,runs:4965,avg:40.69,sr:148.9,hundreds:6,fifties:32},
+    {rank:9,player:'KL Rahul',team:'PBKS/LSG',inn:141,runs:4683,avg:45.96,sr:135.0,hundreds:4,fifties:38},
+    {rank:10,player:'Faf du Plessis',team:'CSK/RCB',inn:158,runs:4465,avg:34.11,sr:134.8,hundreds:0,fifties:35},
+  ],
+  sixes:[
+    {rank:1,player:'Chris Gayle',team:'RCB/PBKS',matches:142,sixes:357,fours:280,bdryPct:48.2},
+    {rank:2,player:'AB de Villiers',team:'RCB',matches:154,sixes:251,fours:372,bdryPct:52.1},
+    {rank:3,player:'MS Dhoni',team:'CSK',matches:250,sixes:229,fours:334,bdryPct:34.8},
+    {rank:4,player:'Rohit Sharma',team:'MI',matches:243,sixes:228,fours:531,bdryPct:38.5},
+    {rank:5,player:'Virat Kohli',team:'RCB',matches:237,sixes:219,fours:728,bdryPct:47.2},
+    {rank:6,player:'Kieron Pollard',team:'MI',matches:189,sixes:218,fours:236,bdryPct:42.7},
+    {rank:7,player:'David Warner',team:'SRH',matches:176,sixes:207,fours:609,bdryPct:50.4},
+    {rank:8,player:'Suresh Raina',team:'CSK',matches:196,sixes:198,fours:452,bdryPct:41.6},
+    {rank:9,player:'Andre Russell',team:'KKR',matches:121,sixes:194,fours:190,bdryPct:54.3},
+    {rank:10,player:'Hardik Pandya',team:'MI/GT',matches:138,sixes:180,fours:214,bdryPct:46.8},
+  ],
+  avg:[
+    {rank:1,player:'KL Rahul',team:'PBKS/LSG',inn:141,runs:4683,no:42,avg:47.30,hs:'132*'},
+    {rank:2,player:'David Warner',team:'SRH',inn:176,runs:6397,no:26,avg:42.65,hs:'126'},
+    {rank:3,player:'Chris Gayle',team:'RCB',inn:142,runs:4965,no:20,avg:41.37,hs:'175*'},
+    {rank:4,player:'AB de Villiers',team:'RCB',inn:154,runs:5162,no:24,avg:39.70,hs:'133*'},
+    {rank:5,player:'MS Dhoni',team:'CSK',inn:250,runs:5082,no:121,avg:39.24,hs:'84*'},
+    {rank:6,player:'Virat Kohli',team:'RCB',inn:237,runs:8004,no:24,avg:37.56,hs:'113'},
+    {rank:7,player:'Faf du Plessis',team:'CSK/RCB',inn:158,runs:4465,no:27,avg:34.09,hs:'96'},
+    {rank:8,player:'Suresh Raina',team:'CSK',inn:196,runs:5528,no:34,avg:33.34,hs:'100*'},
+    {rank:9,player:'Rohit Sharma',team:'MI',inn:243,runs:6211,no:33,avg:29.62,hs:'109*'},
+    {rank:10,player:'Shikhar Dhawan',team:'DC/SRH',inn:206,runs:6244,no:20,avg:33.14,hs:'97'},
+  ],
+  sr:[
+    {rank:1,player:'Andre Russell',team:'KKR',balls:1820,runs:3610,sr:198.35,sixes:194},
+    {rank:2,player:'Sunil Narine',team:'KKR',balls:1240,runs:1968,sr:158.71,sixes:96},
+    {rank:3,player:'Kieron Pollard',team:'MI',balls:2680,runs:3412,sr:157.20,sixes:218},
+    {rank:4,player:'AB de Villiers',team:'RCB',balls:3402,runs:5162,sr:151.73,sixes:251},
+    {rank:5,player:'Chris Gayle',team:'RCB',balls:3340,runs:4965,sr:148.65,sixes:357},
+    {rank:6,player:'Glenn Maxwell',team:'PBKS/RCB',balls:2246,runs:3198,sr:142.38,sixes:165},
+    {rank:7,player:'Jos Buttler',team:'RR',balls:2012,runs:2773,sr:137.82,sixes:162},
+    {rank:8,player:'Hardik Pandya',team:'MI/GT',balls:2280,runs:3140,sr:137.72,sixes:180},
+    {rank:9,player:'David Warner',team:'SRH',balls:4584,runs:6397,sr:139.56,sixes:207},
+    {rank:10,player:'MS Dhoni',team:'CSK',balls:3768,runs:5082,sr:134.89,sixes:229},
+  ],
+  hs:[
+    {rank:1,player:'Chris Gayle',score:'175*',balls:66,fours:17,sixes:13,vs:'PBKS',season:'2013'},
+    {rank:2,player:'Brendon McCullum',score:'158*',balls:73,fours:10,sixes:13,vs:'RCB',season:'2008'},
+    {rank:3,player:'AB de Villiers',score:'133*',balls:59,fours:9,sixes:11,vs:'MI',season:'2015'},
+    {rank:4,player:'David Warner',score:'126',balls:59,fours:10,sixes:9,vs:'KKR',season:'2017'},
+    {rank:5,player:'KL Rahul',score:'132*',balls:69,fours:11,sixes:8,vs:'RCB',season:'2020'},
+    {rank:6,player:'Suresh Raina',score:'100*',balls:53,fours:6,sixes:8,vs:'MI',season:'2014'},
+    {rank:7,player:'Virat Kohli',score:'113',balls:50,fours:8,sixes:7,vs:'GL',season:'2016'},
+    {rank:8,player:'Ruturaj Gaikwad',score:'101*',balls:60,fours:8,sixes:5,vs:'MI',season:'2021'},
+    {rank:9,player:'Shane Watson',score:'117*',balls:57,fours:10,sixes:8,vs:'MI',season:'2018'},
+    {rank:10,player:'Jos Buttler',score:'124',balls:64,fours:9,sixes:8,vs:'LSG',season:'2022'},
+  ],
+  centuries:[
+    {rank:1,player:'Chris Gayle',team:'RCB/PBKS',hundreds:6,fifties:32,inn:142,runs:4965},
+    {rank:2,player:'Virat Kohli',team:'RCB',hundreds:8,fifties:55,inn:237,runs:8004},
+    {rank:3,player:'David Warner',team:'SRH',hundreds:4,fifties:58,inn:176,runs:6397},
+    {rank:4,player:'KL Rahul',team:'PBKS/LSG',hundreds:4,fifties:38,inn:141,runs:4683},
+    {rank:5,player:'Jos Buttler',team:'RR',hundreds:4,fifties:24,inn:104,runs:3422},
+    {rank:6,player:'Rohit Sharma',team:'MI',hundreds:2,fifties:43,inn:243,runs:6211},
+    {rank:7,player:'Shikhar Dhawan',team:'DC/SRH',hundreds:2,fifties:50,inn:206,runs:6244},
+    {rank:8,player:'AB de Villiers',team:'RCB',hundreds:3,fifties:40,inn:154,runs:5162},
+    {rank:9,player:'Faf du Plessis',team:'CSK/RCB',hundreds:0,fifties:35,inn:158,runs:4465},
+    {rank:10,player:'Suresh Raina',team:'CSK',hundreds:1,fifties:38,inn:196,runs:5528},
+  ],
+  ducks:[
+    {rank:1,player:'Rohit Sharma',team:'MI',ducks:22,inn:243,pct:'9.1%'},
+    {rank:2,player:'Harbhajan Singh',team:'MI/CSK',ducks:19,inn:98,pct:'19.4%'},
+    {rank:3,player:'Virat Kohli',team:'RCB',ducks:14,inn:237,pct:'5.9%'},
+    {rank:4,player:'MS Dhoni',team:'CSK',ducks:13,inn:250,pct:'5.2%'},
+    {rank:5,player:'Suresh Raina',team:'CSK',ducks:12,inn:196,pct:'6.1%'},
+  ],
+  wickets:[
+    {rank:1,player:'Yuzvendra Chahal',team:'RCB/RR/PBKS',matches:154,wkts:187,avg:21.8,eco:7.59,sr:17.2,bbi:'5/40'},
+    {rank:2,player:'Dwayne Bravo',team:'CSK/GT',matches:161,wkts:183,avg:25.0,eco:8.36,sr:17.9,bbi:'4/36'},
+    {rank:3,player:'Piyush Chawla',team:'KKR/CSK',matches:165,wkts:177,avg:27.3,eco:7.87,sr:20.8,bbi:'4/17'},
+    {rank:4,player:'Lasith Malinga',team:'MI',matches:122,wkts:170,avg:19.8,eco:7.14,sr:16.6,bbi:'5/13'},
+    {rank:5,player:'Amit Mishra',team:'DC/SRH',matches:154,wkts:166,avg:23.8,eco:7.33,sr:19.5,bbi:'5/17'},
+    {rank:6,player:'Ravichandran Ashwin',team:'CSK/PBKS/DC',matches:215,wkts:163,avg:28.7,eco:7.01,sr:24.5,bbi:'4/11'},
+    {rank:7,player:'Harbhajan Singh',team:'MI/CSK',matches:163,wkts:150,avg:26.9,eco:7.05,sr:22.9,bbi:'5/18'},
+    {rank:8,player:'Jasprit Bumrah',team:'MI',matches:131,wkts:148,avg:23.8,eco:7.39,sr:19.3,bbi:'5/10'},
+    {rank:9,player:'Sunil Narine',team:'KKR',matches:177,wkts:163,avg:24.6,eco:6.67,sr:22.1,bbi:'5/19'},
+    {rank:10,player:'Umesh Yadav',team:'DC/KKR',matches:134,wkts:140,avg:27.0,eco:8.42,sr:19.2,bbi:'4/20'},
+  ],
+  eco:[
+    {rank:1,player:'Sunil Narine',team:'KKR',overs:590,runs:3927,wkts:163,eco:6.65},
+    {rank:2,player:'Rashid Khan',team:'SRH/GT',overs:436,runs:2802,wkts:112,eco:6.42},
+    {rank:3,player:'Harbhajan Singh',team:'MI/CSK',overs:550,runs:3880,wkts:150,eco:7.05},
+    {rank:4,player:'Ravichandran Ashwin',team:'CSK/PBKS',overs:649,runs:4551,wkts:163,eco:7.01},
+    {rank:5,player:'Amit Mishra',team:'DC/SRH',overs:543,runs:3979,wkts:166,eco:7.33},
+    {rank:6,player:'Jasprit Bumrah',team:'MI',overs:479,runs:3539,wkts:148,eco:7.39},
+    {rank:7,player:'Lasith Malinga',team:'MI',overs:430,runs:3074,wkts:170,eco:7.14},
+    {rank:8,player:'Yuzvendra Chahal',team:'RCB/RR',overs:543,runs:4126,wkts:187,eco:7.59},
+    {rank:9,player:'Piyush Chawla',team:'KKR/CSK',overs:569,runs:4477,wkts:177,eco:7.87},
+    {rank:10,player:'Dwayne Bravo',team:'CSK/GT',overs:519,runs:4339,wkts:183,eco:8.36},
+  ],
+  bbi:[
+    {rank:1,player:'Sohail Tanvir',figures:'6/14',eco:3.50,vs:'CSK',season:'2008'},
+    {rank:2,player:'Alzarri Joseph',figures:'6/12',eco:3.00,vs:'SRH',season:'2019'},
+    {rank:3,player:'Adam Zampa',figures:'5/15',eco:4.28,vs:'RCB',season:'2020'},
+    {rank:4,player:'Lasith Malinga',figures:'5/13',eco:3.25,vs:'DC',season:'2011'},
+    {rank:5,player:'Amit Mishra',figures:'5/17',eco:4.25,vs:'DC',season:'2013'},
+    {rank:6,player:'Jasprit Bumrah',figures:'5/10',eco:2.50,vs:'MI',season:'2020'},
+    {rank:7,player:'Dwayne Bravo',figures:'5/23',eco:5.75,vs:'DC',season:'2019'},
+    {rank:8,player:'Harshal Patel',figures:'5/27',eco:6.75,vs:'MI',season:'2021'},
+    {rank:9,player:'Sunil Narine',figures:'5/19',eco:4.75,vs:'RR',season:'2012'},
+    {rank:10,player:'Harbhajan Singh',figures:'5/18',eco:4.50,vs:'DC',season:'2010'},
+  ],
+  fwhauls:[
+    {rank:1,player:'Dwayne Bravo',team:'CSK',fw4:26,fw5:3,wkts:183},
+    {rank:2,player:'Yuzvendra Chahal',team:'RCB/RR',fw4:18,fw5:2,wkts:187},
+    {rank:3,player:'Harbhajan Singh',team:'MI/CSK',fw4:14,fw5:3,wkts:150},
+    {rank:4,player:'Jasprit Bumrah',team:'MI',fw4:12,fw5:1,wkts:148},
+    {rank:5,player:'Piyush Chawla',team:'KKR/CSK',fw4:11,fw5:0,wkts:177},
+  ],
+  dots:[
+    {rank:1,player:'Ravichandran Ashwin',team:'CSK/PBKS/DC',dots:1242,overs:649,pct:'31.9%'},
+    {rank:2,player:'Sunil Narine',team:'KKR',dots:1238,overs:590,pct:'34.9%'},
+    {rank:3,player:'Harbhajan Singh',team:'MI/CSK',dots:1102,overs:550,pct:'33.4%'},
+    {rank:4,player:'Jasprit Bumrah',team:'MI',dots:1020,overs:479,pct:'35.5%'},
+    {rank:5,player:'Rashid Khan',team:'SRH/GT',dots:940,overs:436,pct:'35.9%'},
+  ],
+  catches:[
+    {rank:1,player:'Suresh Raina',team:'CSK',catches:122,matches:196,perMatch:0.62},
+    {rank:2,player:'Virat Kohli',team:'RCB',catches:100,matches:237,perMatch:0.42},
+    {rank:3,player:'Rohit Sharma',team:'MI',catches:99,matches:243,perMatch:0.41},
+    {rank:4,player:'Kieron Pollard',team:'MI',catches:89,matches:189,perMatch:0.47},
+    {rank:5,player:'AB de Villiers',team:'RCB',catches:84,matches:154,perMatch:0.55},
+    {rank:6,player:'David Warner',team:'SRH',catches:80,matches:176,perMatch:0.45},
+    {rank:7,player:'Shikhar Dhawan',team:'DC/SRH',catches:76,matches:206,perMatch:0.37},
+    {rank:8,player:'Ravindra Jadeja',team:'CSK',catches:74,matches:210,perMatch:0.35},
+    {rank:9,player:'Hardik Pandya',team:'MI/GT',catches:70,matches:138,perMatch:0.51},
+    {rank:10,player:'MS Dhoni',team:'CSK',catches:66,matches:250,perMatch:0.26},
+  ],
+  runouts:[
+    {rank:1,player:'MS Dhoni',team:'CSK',runouts:24,matches:250},
+    {rank:2,player:'Virat Kohli',team:'RCB',runouts:20,matches:237},
+    {rank:3,player:'Suresh Raina',team:'CSK',runouts:18,matches:196},
+    {rank:4,player:'Rohit Sharma',team:'MI',runouts:17,matches:243},
+    {rank:5,player:'AB de Villiers',team:'RCB',runouts:15,matches:154},
+  ],
+  catchEff:[
+    {rank:1,team:'KKR',caught:184,dropped:11,eff:'94.4%'},
+    {rank:2,team:'CSK',caught:228,dropped:15,eff:'93.8%'},
+    {rank:3,team:'MI',caught:231,dropped:16,eff:'93.5%'},
+    {rank:4,team:'SRH',caught:182,dropped:14,eff:'92.9%'},
+    {rank:5,team:'DC',caught:176,dropped:14,eff:'92.6%'},
+    {rank:6,team:'RCB',caught:203,dropped:17,eff:'92.3%'},
+    {rank:7,team:'RR',caught:170,dropped:15,eff:'91.9%'},
+    {rank:8,team:'PBKS',caught:172,dropped:16,eff:'91.5%'},
+    {rank:9,team:'GT',caught:88,dropped:9,eff:'90.7%'},
+    {rank:10,team:'LSG',caught:88,dropped:10,eff:'89.8%'},
+  ],
+  partnerships:[
+    {rank:1,pair:'CH Gayle & V Kohli',runs:229,balls:144,sr:159.0,wicket:'1st',season:'2012'},
+    {rank:2,pair:'DA Warner & S Dhawan',runs:210,balls:136,sr:154.4,wicket:'1st',season:'2016'},
+    {rank:3,pair:'CH Gayle & TM Dilshan',runs:202,balls:128,sr:157.8,wicket:'1st',season:'2011'},
+    {rank:4,pair:'SA Yadav & HH Pandya',runs:198,balls:112,sr:176.8,wicket:'5th',season:'2023'},
+    {rank:5,pair:'KL Rahul & M Vohra',runs:183,balls:100,sr:183.0,wicket:'1st',season:'2016'},
+    {rank:6,pair:'RV Uthappa & G Gambhir',runs:178,balls:120,sr:148.3,wicket:'1st',season:'2014'},
+    {rank:7,pair:'V Kohli & AB de Villiers',runs:165,balls:96,sr:171.9,wicket:'3rd',season:'2016'},
+    {rank:8,pair:'RG Sharma & AT Rayudu',runs:157,balls:88,sr:178.4,wicket:'2nd',season:'2015'},
+    {rank:9,pair:'Q de Kock & RG Sharma',runs:155,balls:92,sr:168.5,wicket:'1st',season:'2021'},
+    {rank:10,pair:'JC Buttler & Y Jaiswal',runs:148,balls:82,sr:180.5,wicket:'1st',season:'2023'},
+  ],
+  partsWkt:[
+    {wkt:'1st',pair:'CH Gayle & V Kohli',runs:229,team:'RCB',season:'2012'},
+    {wkt:'2nd',pair:'V Kohli & AB de Villiers',runs:161,team:'RCB',season:'2015'},
+    {wkt:'3rd',pair:'V Kohli & AB de Villiers',runs:165,team:'RCB',season:'2016'},
+    {wkt:'4th',pair:'SR Watson & SK Raina',runs:145,team:'CSK',season:'2010'},
+    {wkt:'5th',pair:'SA Yadav & HH Pandya',runs:198,team:'MI',season:'2023'},
+    {wkt:'6th',pair:'KA Pollard & KH Pandya',runs:135,team:'MI',season:'2016'},
+    {wkt:'7th',pair:'MK Tiwary & JD Unadkat',runs:87,team:'SRH',season:'2018'},
+    {wkt:'8th',pair:'DJ Bravo & R Jadeja',runs:73,team:'CSK',season:'2012'},
+    {wkt:'9th',pair:'PP Ojha & T Suman',runs:50,team:'DC',season:'2011'},
+    {wkt:'10th',pair:'SL Malinga & MI',runs:25,team:'MI',season:'2017'},
+  ],
+  keeping:[
+    {rank:1,player:'MS Dhoni',team:'CSK',caught:130,stumped:42,total:172,matches:250},
+    {rank:2,player:'Dinesh Karthik',team:'KKR/RCB',caught:95,stumped:16,total:111,matches:190},
+    {rank:3,player:'Rishabh Pant',team:'DC',caught:88,stumped:12,total:100,matches:107},
+    {rank:4,player:'Robin Uthappa',team:'KKR/RCB',caught:74,stumped:8,total:82,matches:196},
+    {rank:5,player:'KL Rahul',team:'PBKS/LSG',caught:64,stumped:10,total:74,matches:141},
+    {rank:6,player:'Naman Ojha',team:'SRH/DC',caught:55,stumped:12,total:67,matches:88},
+    {rank:7,player:'Parthiv Patel',team:'MI/RCB',caught:58,stumped:6,total:64,matches:143},
+    {rank:8,player:'Sanju Samson',team:'RR',caught:52,stumped:9,total:61,matches:130},
+    {rank:9,player:'Jos Buttler',team:'RR',caught:48,stumped:6,total:54,matches:104},
+    {rank:10,player:'Quinton de Kock',team:'MI/LSG',caught:46,stumped:5,total:51,matches:93},
+  ],
+  stumpings:[
+    {rank:1,player:'MS Dhoni',team:'CSK',stumpings:42,matches:250},
+    {rank:2,player:'Dinesh Karthik',team:'KKR',stumpings:16,matches:190},
+    {rank:3,player:'Rishabh Pant',team:'DC',stumpings:12,matches:107},
+    {rank:4,player:'Naman Ojha',team:'SRH',stumpings:12,matches:88},
+    {rank:5,player:'KL Rahul',team:'PBKS/LSG',stumpings:10,matches:141},
+  ],
+  highTotals:[
+    {rank:1,team:'RCB',score:'287/2',overs:20,vs:'PBKS',venue:'Chinnaswamy',season:'2016'},
+    {rank:2,team:'KKR',score:'245/6',overs:20,vs:'DC',venue:'Eden Gardens',season:'2008'},
+    {rank:3,team:'CSK',score:'240/5',overs:20,vs:'MI',venue:'Wankhede',season:'2010'},
+    {rank:4,team:'SRH',score:'231/2',overs:20,vs:'RR',venue:'Rajiv Gandhi',season:'2019'},
+    {rank:5,team:'MI',score:'230/3',overs:20,vs:'CSK',venue:'Wankhede',season:'2015'},
+    {rank:6,team:'RCB',score:'227/4',overs:20,vs:'DC',venue:'Chinnaswamy',season:'2011'},
+    {rank:7,team:'KKR',score:'222/6',overs:20,vs:'RCB',venue:'Eden Gardens',season:'2014'},
+    {rank:8,team:'DC',score:'219/3',overs:20,vs:'PBKS',venue:'Jaitley',season:'2012'},
+    {rank:9,team:'CSK',score:'218/4',overs:20,vs:'SRH',venue:'Chepauk',season:'2018'},
+    {rank:10,team:'PBKS',score:'209/4',overs:20,vs:'MI',venue:'PCA Stadium',season:'2021'},
+  ],
+  lowTotals:[
+    {rank:1,team:'RR',score:'49/10',overs:9.4,vs:'KKR',season:'2009'},
+    {rank:2,team:'DC',score:'66/10',overs:12.2,vs:'CSK',season:'2012'},
+    {rank:3,team:'PBKS',score:'73/10',overs:15.4,vs:'MI',season:'2010'},
+    {rank:4,team:'RCB',score:'70/10',overs:15.1,vs:'KKR',season:'2017'},
+    {rank:5,team:'SRH',score:'80/10',overs:17.3,vs:'CSK',season:'2019'},
+  ],
+  margins:[
+    {rank:1,winner:'MI',margin:'146 runs',vs:'Delhi Daredevils',season:'2017'},
+    {rank:2,winner:'SRH',margin:'143 runs',vs:'RR',season:'2017'},
+    {rank:3,winner:'CSK',margin:'131 runs',vs:'RR',season:'2011'},
+    {rank:4,winner:'RCB',margin:'130 runs',vs:'PBKS',season:'2016'},
+    {rank:5,winner:'KKR',margin:'116 runs',vs:'RCB',season:'2008'},
+  ],
+  extras:[
+    {rank:1,team:'DC',extras:32,wides:18,nb:6,vs:'SRH',season:'2019'},
+    {rank:2,team:'RCB',extras:30,wides:16,nb:4,vs:'KKR',season:'2012'},
+    {rank:3,team:'PBKS',extras:28,wides:15,nb:5,vs:'MI',season:'2021'},
+    {rank:4,team:'MI',extras:27,wides:14,nb:6,vs:'CSK',season:'2011'},
+    {rank:5,team:'SRH',extras:26,wides:13,nb:4,vs:'RR',season:'2018'},
+  ],
+  teams:[
+    {rank:1,team:'Mumbai Indians',matches:279,wins:167,losses:112,winPct:'59.9%',titles:5},
+    {rank:2,team:'Chennai Super Kings',matches:250,wins:142,losses:108,winPct:'56.8%',titles:5},
+    {rank:3,team:'Kolkata Knight Riders',matches:256,wins:141,losses:115,winPct:'55.1%',titles:3},
+    {rank:4,team:'Sunrisers Hyderabad',matches:172,wins:92,losses:80,winPct:'53.5%',titles:1},
+    {rank:5,team:'Rajasthan Royals',matches:210,wins:107,losses:103,winPct:'51.0%',titles:2},
+    {rank:6,team:'Royal Challengers Bengaluru',matches:256,wins:128,losses:128,winPct:'50.0%',titles:0},
+    {rank:7,team:'Delhi Capitals',matches:236,wins:113,losses:123,winPct:'47.9%',titles:0},
+    {rank:8,team:'Punjab Kings',matches:232,wins:107,losses:125,winPct:'46.1%',titles:0},
+    {rank:9,team:'Gujarat Titans',matches:76,wins:46,losses:30,winPct:'60.5%',titles:1},
+    {rank:10,team:'Lucknow Super Giants',matches:68,wins:38,losses:30,winPct:'55.9%',titles:0},
+  ],
+  individuals:[
+    {rank:1,player:'MS Dhoni',matches:250,asCaptain:204,teams:'CSK · Rising Pune'},
+    {rank:2,player:'Virat Kohli',matches:237,asCaptain:143,teams:'Royal Challengers Bengaluru'},
+    {rank:3,player:'Rohit Sharma',matches:243,asCaptain:147,teams:'MI · Deccan Chargers'},
+    {rank:4,player:'Suresh Raina',matches:196,asCaptain:18,teams:'CSK · Gujarat Lions'},
+    {rank:5,player:'Dinesh Karthik',matches:190,asCaptain:48,teams:'KKR · DC · RCB'},
+  ],
+  stadiums:[
+    {name:'Wankhede Stadium',city:'Mumbai',matches:94,avgFirst:178,batFirstWin:'54%',fieldFirstWin:'46%',high:'230/3',low:'93/10'},
+    {name:'Eden Gardens',city:'Kolkata',matches:88,avgFirst:165,batFirstWin:'49%',fieldFirstWin:'51%',high:'245/6',low:'80/10'},
+    {name:'M. Chinnaswamy',city:'Bengaluru',matches:84,avgFirst:182,batFirstWin:'57%',fieldFirstWin:'43%',high:'287/2',low:'70/10'},
+    {name:'Chepauk Stadium',city:'Chennai',matches:76,avgFirst:168,batFirstWin:'60%',fieldFirstWin:'40%',high:'218/4',low:'98/10'},
+    {name:'Rajiv Gandhi Int.',city:'Hyderabad',matches:64,avgFirst:171,batFirstWin:'52%',fieldFirstWin:'48%',high:'231/2',low:'82/10'},
+    {name:'Arun Jaitley',city:'Delhi',matches:72,avgFirst:162,batFirstWin:'47%',fieldFirstWin:'53%',high:'219/3',low:'66/10'},
+    {name:'Narendra Modi',city:'Ahmedabad',matches:44,avgFirst:175,batFirstWin:'52%',fieldFirstWin:'48%',high:'224/3',low:'88/10'},
+    {name:'Sawai Mansingh',city:'Jaipur',matches:60,avgFirst:169,batFirstWin:'51%',fieldFirstWin:'49%',high:'211/2',low:'73/10'},
+    {name:'BRSABV Ekana',city:'Lucknow',matches:34,avgFirst:168,batFirstWin:'48%',fieldFirstWin:'52%',high:'210/4',low:'86/10'},
+    {name:'Brabourne Stadium',city:'Mumbai',matches:30,avgFirst:166,batFirstWin:'50%',fieldFirstWin:'50%',high:'209/3',low:'94/10'},
+    {name:'PCA Stadium',city:'Mohali',matches:40,avgFirst:164,batFirstWin:'49%',fieldFirstWin:'51%',high:'209/4',low:'80/10'},
+    {name:'DY Patil Stadium',city:'Navi Mumbai',matches:22,avgFirst:172,batFirstWin:'54%',fieldFirstWin:'46%',high:'218/5',low:'92/10'},
+  ],
+};
+
+/* ── Populate tables ─────────────────────── */
+function populateTables(d){
+  // Runs leaderboard
+  const rb=document.getElementById('lb-runs-body');
+  if(rb)rb.innerHTML=d.runs.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.inn),bigVal(r.runs.toLocaleString()),mono(r.avg.toFixed(2)),mono(r.sr.toFixed(1)),mono(r.hundreds),mono(r.fifties)])).join('');
+  // Sixes
+  const sb=document.getElementById('lb-sixes-body');
+  if(sb)sb.innerHTML=d.sixes.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.matches),bigVal(r.sixes),mono(r.fours),mono(r.bdryPct+'%')])).join('');
+  // Average
+  const ab=document.getElementById('lb-avg-body');
+  if(ab)ab.innerHTML=d.avg.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.inn),mono(r.runs.toLocaleString()),mono(r.no),bigVal(r.avg.toFixed(2)),mono(r.hs)])).join('');
+  // SR
+  const srb=document.getElementById('lb-sr-body');
+  if(srb)srb.innerHTML=d.sr.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.balls),mono(r.runs),bigVal(r.sr.toFixed(2)),mono(r.sixes)])).join('');
+  // HS
+  const hsb=document.getElementById('lb-hs-body');
+  if(hsb)hsb.innerHTML=d.hs.map((r,i)=>row([rankCell(i+1),playerCell(r.player,''),bigVal(r.score),mono(r.balls),mono(r.fours),mono(r.sixes),`<td style="font-family:var(--f-mono);font-size:11px;color:var(--t3)">${r.vs}</td>`,`<td style="font-family:var(--f-mono);font-size:11px;color:var(--t3)">${r.season}</td>`],true)).join('');
+  // Centuries
+  const cb=document.getElementById('lb-100s-body');
+  if(cb)cb.innerHTML=d.centuries.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),bigVal(r.hundreds),mono(r.fifties),mono(r.inn),mono(r.runs.toLocaleString())])).join('');
+  // Ducks
+  const db=document.getElementById('lb-ducks-body');
+  if(db)db.innerHTML=d.ducks.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),bigVal(r.ducks),mono(r.inn),mono(r.pct)])).join('');
+  // Wickets
+  const wb=document.getElementById('lb-wickets-body');
+  if(wb)wb.innerHTML=d.wickets.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.matches),bigVal(r.wkts),mono(r.avg.toFixed(1)),mono(r.eco.toFixed(2)),mono(r.sr.toFixed(1)),mono(r.bbi)])).join('');
+  // Eco
+  const eb=document.getElementById('lb-eco-body');
+  if(eb)eb.innerHTML=d.eco.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.overs),mono(r.runs),mono(r.wkts),bigVal(r.eco.toFixed(2))])).join('');
+  // BBI
+  const bb=document.getElementById('lb-bbi-body');
+  if(bb)bb.innerHTML=d.bbi.map((r,i)=>row([rankCell(i+1),playerCell(r.player,''),bigVal(r.figures),mono(r.eco.toFixed(2)),`<td style="font-family:var(--f-mono);font-size:11px;color:var(--t3)">${r.vs}</td>`,`<td style="font-family:var(--f-mono);font-size:11px;color:var(--t3)">${r.season}</td>`],true)).join('');
+  // 4W hauls
+  const fw=document.getElementById('lb-4w-body');
+  if(fw)fw.innerHTML=d.fwhauls.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),bigVal(r.fw4),mono(r.fw5),mono(r.wkts)])).join('');
+  // Dots
+  const dotb=document.getElementById('lb-dots-body');
+  if(dotb)dotb.innerHTML=d.dots.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),bigVal(r.dots),mono(r.overs),mono(r.pct)])).join('');
+  // Catches
+  const catb=document.getElementById('lb-catches-body');
+  if(catb)catb.innerHTML=d.catches.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),bigVal(r.catches),mono(r.matches),mono(r.perMatch.toFixed(2))])).join('');
+  // Run outs
+  const rob=document.getElementById('lb-runouts-body');
+  if(rob)rob.innerHTML=d.runouts.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),bigVal(r.runouts),mono(r.matches)])).join('');
+  // Catch eff
+  const ceb=document.getElementById('lb-catch-eff-body');
+  if(ceb)ceb.innerHTML=d.catchEff.map((r,i)=>`<tr><td><span class="lb-rank${i<3?' lb-rank-'+(i+1):''}">${i+1}</span></td><td style="font-family:var(--f-cond);font-size:15px;font-weight:700;color:var(--t1)">${r.team}</td><td class="lb-val">${r.caught}</td><td class="lb-sub">${r.dropped}</td><td class="lb-val">${r.eff}</td></tr>`).join('');
+  // Partnerships
+  const pb=document.getElementById('lb-parts-body');
+  if(pb)pb.innerHTML=d.partnerships.map((r,i)=>`<tr><td><span class="lb-rank${i<3?' lb-rank-'+(i+1):''}">${i+1}</span></td><td style="font-family:var(--f-cond);font-size:14px;font-weight:700;color:var(--t1)">${r.pair}</td><td class="lb-val">${r.runs}</td><td class="lb-sub">${r.balls}</td><td class="lb-sub">${r.sr}</td><td class="lb-sub">${r.wicket}</td><td class="lb-sub">${r.season}</td></tr>`).join('');
+  // Parts by wicket
+  const pwb=document.getElementById('lb-parts-wkt-body');
+  if(pwb)pwb.innerHTML=d.partsWkt.map(r=>`<tr><td style="font-family:var(--f-display);font-size:16px;color:var(--orange)">${r.wkt}</td><td style="font-family:var(--f-cond);font-size:14px;font-weight:700;color:var(--t1)">${r.pair}</td><td class="lb-val">${r.runs}</td><td style="font-family:var(--f-mono);font-size:11px;color:var(--t3)">${r.team}</td><td style="font-family:var(--f-mono);font-size:11px;color:var(--t3)">${r.season}</td></tr>`).join('');
+  // Keeping
+  const kb=document.getElementById('lb-keep-body');
+  if(kb)kb.innerHTML=d.keeping.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.caught),mono(r.stumped),bigVal(r.total),mono(r.matches)])).join('');
+  // Stumpings
+  const stb=document.getElementById('lb-stump-body');
+  if(stb)stb.innerHTML=d.stumpings.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),bigVal(r.stumpings),mono(r.matches)])).join('');
+  // High totals
+  const htb=document.getElementById('lb-totals-body');
+  if(htb)htb.innerHTML=d.highTotals.map((r,i)=>`<tr><td><span class="lb-rank${i<3?' lb-rank-'+(i+1):''}">${i+1}</span></td><td style="font-family:var(--f-cond);font-size:14px;font-weight:700;color:var(--t1)">${r.team}</td><td class="lb-val">${r.score}</td><td class="lb-sub">${r.overs}</td><td style="font-family:var(--f-mono);font-size:10px;color:var(--t3)">${r.vs}</td><td style="font-family:var(--f-mono);font-size:10px;color:var(--t3)">${r.venue}</td><td style="font-family:var(--f-mono);font-size:10px;color:var(--t3)">${r.season}</td></tr>`).join('');
+  // Low totals
+  const ltb=document.getElementById('lb-low-body');
+  if(ltb)ltb.innerHTML=d.lowTotals.map((r,i)=>`<tr><td><span class="lb-rank">${i+1}</span></td><td style="font-family:var(--f-cond);font-size:14px;font-weight:700;color:var(--t1)">${r.team}</td><td style="font-family:var(--f-display);font-size:20px;color:var(--red);text-align:right">${r.score}</td><td class="lb-sub">${r.overs}</td><td style="font-family:var(--f-mono);font-size:10px;color:var(--t3)">${r.vs}</td><td style="font-family:var(--f-mono);font-size:10px;color:var(--t3)">${r.season}</td></tr>`).join('');
+  // Margins
+  const mb=document.getElementById('lb-margins-body');
+  if(mb)mb.innerHTML=d.margins.map((r,i)=>`<tr><td><span class="lb-rank${i<3?' lb-rank-'+(i+1):''}">${i+1}</span></td><td style="font-family:var(--f-cond);font-size:14px;font-weight:700;color:var(--t1)">${r.winner}</td><td class="lb-val">${r.margin}</td><td style="font-family:var(--f-mono);font-size:10px;color:var(--t3)">${r.vs}</td><td style="font-family:var(--f-mono);font-size:10px;color:var(--t3)">${r.season}</td></tr>`).join('');
+  // Extras
+  const exb=document.getElementById('lb-extras-body');
+  if(exb)exb.innerHTML=d.extras.map((r,i)=>`<tr><td><span class="lb-rank">${i+1}</span></td><td style="font-family:var(--f-cond);font-size:14px;font-weight:700;color:var(--t1)">${r.team}</td><td class="lb-val">${r.extras}</td><td class="lb-sub">${r.wides}</td><td class="lb-sub">${r.nb}</td><td style="font-family:var(--f-mono);font-size:10px;color:var(--t3)">${r.vs}</td><td style="font-family:var(--f-mono);font-size:10px;color:var(--t3)">${r.season}</td></tr>`).join('');
+  // Teams
+  const tb=document.getElementById('lb-team-body');
+  if(tb)tb.innerHTML=d.teams.map((r,i)=>row([rankCell(i+1),`<td style="font-family:var(--f-cond);font-size:14px;font-weight:700;color:var(--t1)">${r.team}</td>`,mono(r.matches),mono(r.wins),mono(r.losses),bigVal(r.winPct),mono(r.titles+'🏆')])).join('');
+  // Individuals
+  const ib=document.getElementById('lb-indiv-body');
+  if(ib)ib.innerHTML=d.individuals.map((r,i)=>row([rankCell(i+1),playerCell(r.player,''),bigVal(r.matches),mono(r.asCaptain),`<td style="font-family:var(--f-mono);font-size:10px;color:var(--t3)">${r.teams}</td>`],true)).join('');
+  // Stadiums
+  buildStadiums(d.stadiums);
+}
+
+function row(cells,raw=false){
+  return `<tr>${cells.join('')}</tr>`;
+}
+function rankCell(n){
+  const cls=n===1?' lb-rank-1':n===2?' lb-rank-2':n===3?' lb-rank-3':'';
+  return `<td><span class="lb-rank${cls}">${n}</span></td>`;
+}
+function playerCell(name,team){
+  return `<td><div class="lb-player">${name}</div>${team?`<div class="lb-team-tag">${team}</div>`:''}</td>`;
+}
+function mono(v){return `<td class="lb-sub" style="text-align:right">${v}</td>`;}
+function bigVal(v){return `<td class="lb-val">${v}</td>`;}
+
+function buildStadiums(stads){
+  const g=document.getElementById('stadium-grid');
+  if(!g)return;
+  g.innerHTML=stads.map(s=>{
+    const bf=parseInt(s.batFirstWin);
+    const ff=100-bf;
+    return `<div class="stadium-card">
+      <div class="st-name">${s.name}</div>
+      <div class="st-city">${s.city} · ${s.matches} IPL matches</div>
+      <div class="st-stats">
+        <div class="st-stat"><div class="st-val">${s.avgFirst}</div><div class="st-lbl">Avg 1st inn</div></div>
+        <div class="st-stat"><div class="st-val" style="color:var(--green)">${s.high}</div><div class="st-lbl">Highest</div></div>
+        <div class="st-stat"><div class="st-val" style="color:var(--red)">${s.low}</div><div class="st-lbl">Lowest</div></div>
+      </div>
+      <div class="st-winbar">
+        <div class="st-bat-first" style="width:${bf}%"></div>
+        <div class="st-field-first" style="width:${ff}%"></div>
+      </div>
+      <div class="st-bar-labels">
+        <span class="st-bar-lbl" style="color:var(--orange)">🏏 Bat first ${s.batFirstWin}</span>
+        <span class="st-bar-lbl" style="color:var(--blue)">🎳 Field first ${s.fieldFirstWin}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── Chart.js charts ─────────────────────── */
+let chartsBuilt=false;
+const CHART_DEFAULTS={
+  color:'rgba(242,239,232,0.6)',
+  gridColor:'rgba(255,255,255,0.05)',
+  font:{family:"'JetBrains Mono', monospace",size:10},
+};
+
+function makeChart(id,type,labels,datasets,options={}){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const ctx=el.getContext('2d');
+  return new Chart(ctx,{type,data:{labels,datasets},options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:CHART_DEFAULTS.color,font:CHART_DEFAULTS.font,boxWidth:12}},tooltip:{bodyFont:CHART_DEFAULTS.font,titleFont:CHART_DEFAULTS.font}},
+    scales:type==='doughnut'||type==='pie'?{}:{
+      x:{ticks:{color:CHART_DEFAULTS.color,font:CHART_DEFAULTS.font},grid:{color:CHART_DEFAULTS.gridColor}},
+      y:{ticks:{color:CHART_DEFAULTS.color,font:CHART_DEFAULTS.font},grid:{color:CHART_DEFAULTS.gridColor}},
+    },
+    ...options,
+  }});
+}
+
+function buildCharts(){
+  if(chartsBuilt)return;
+  chartsBuilt=true;
+  const d=STAT_DATA;
+
+  // Runs bar
+  makeChart('chart-runs','bar',
+    d.runs.slice(0,8).map(r=>r.player.split(' ').pop()),
+    [{label:'Career Runs',data:d.runs.slice(0,8).map(r=>r.runs),backgroundColor:'rgba(255,208,0,0.7)',borderColor:'#FFD000',borderWidth:1,borderRadius:4}]
+  );
+
+  // Sixes bar
+  makeChart('chart-sixes','bar',
+    d.sixes.slice(0,8).map(r=>r.player.split(' ').pop()),
+    [{label:'Career Sixes',data:d.sixes.slice(0,8).map(r=>r.sixes),backgroundColor:'rgba(255,94,0,0.7)',borderColor:'#FF5E00',borderWidth:1,borderRadius:4}]
+  );
+
+  // Phase doughnut
+  makeChart('chart-phase','doughnut',
+    ['Powerplay (1-6)','Middle (7-15)','Death (16-20)'],
+    [{data:[38,29,33],backgroundColor:['rgba(79,195,247,0.7)','rgba(255,208,0,0.7)','rgba(255,94,0,0.7)'],borderColor:['#4FC3F7','#FFD000','#FF5E00'],borderWidth:2}]
+  );
+
+  // 100s vs 50s
+  makeChart('chart-100s','bar',
+    d.centuries.slice(0,8).map(r=>r.player.split(' ').pop()),
+    [
+      {label:'Centuries (100+)',data:d.centuries.slice(0,8).map(r=>r.hundreds),backgroundColor:'rgba(255,208,0,0.7)',borderRadius:4},
+      {label:'Fifties (50+)',data:d.centuries.slice(0,8).map(r=>r.fifties),backgroundColor:'rgba(0,230,118,0.4)',borderRadius:4},
+    ]
+  );
+
+  // Wickets bar
+  makeChart('chart-wickets','bar',
+    d.wickets.slice(0,8).map(r=>r.player.split(' ').pop()),
+    [{label:'Career Wickets',data:d.wickets.slice(0,8).map(r=>r.wkts),backgroundColor:'rgba(192,132,252,0.7)',borderColor:'#C084FC',borderWidth:1,borderRadius:4}]
+  );
+
+  // Economy bar
+  makeChart('chart-eco','bar',
+    d.eco.slice(0,8).map(r=>r.player.split(' ').pop()),
+    [{label:'Economy Rate',data:d.eco.slice(0,8).map(r=>r.eco),backgroundColor:'rgba(0,230,118,0.6)',borderColor:'#00E676',borderWidth:1,borderRadius:4}]
+  );
+
+  // Wickets by phase doughnut
+  makeChart('chart-wkt-phase','doughnut',
+    ['Powerplay','Middle','Death'],
+    [{data:[28,35,37],backgroundColor:['rgba(79,195,247,0.7)','rgba(192,132,252,0.7)','rgba(255,94,0,0.7)'],borderWidth:2}]
+  );
+
+  // Catches bar
+  makeChart('chart-catches','bar',
+    d.catches.slice(0,8).map(r=>r.player.split(' ').pop()),
+    [{label:'Career Catches',data:d.catches.slice(0,8).map(r=>r.catches),backgroundColor:'rgba(0,230,118,0.6)',borderColor:'#00E676',borderWidth:1,borderRadius:4}]
+  );
+
+  // Catch efficiency bar
+  makeChart('chart-catch-eff','bar',
+    d.catchEff.map(r=>r.team),
+    [{label:'Efficiency %',data:d.catchEff.map(r=>parseFloat(r.eff)),backgroundColor:'rgba(79,195,247,0.6)',borderColor:'#4FC3F7',borderWidth:1,borderRadius:4}],
+    {scales:{y:{min:85,max:96}}}
+  );
+
+  // Partnerships bar
+  makeChart('chart-parts','bar',
+    d.partnerships.slice(0,8).map(r=>r.pair.split('&')[0].trim().split(' ').pop()+'&'+r.pair.split('&')[1].trim().split(' ').pop()),
+    [{label:'Partnership Runs',data:d.partnerships.slice(0,8).map(r=>r.runs),backgroundColor:'rgba(255,94,0,0.6)',borderColor:'#FF5E00',borderWidth:1,borderRadius:4}]
+  );
+
+  // Keeper dismissals stacked bar
+  makeChart('chart-keep','bar',
+    d.keeping.slice(0,6).map(r=>r.player.split(' ').pop()),
+    [
+      {label:'Caught',data:d.keeping.slice(0,6).map(r=>r.caught),backgroundColor:'rgba(79,195,247,0.7)',borderRadius:4},
+      {label:'Stumped',data:d.keeping.slice(0,6).map(r=>r.stumped),backgroundColor:'rgba(0,230,118,0.7)',borderRadius:4},
+    ],
+    {scales:{x:{stacked:true},y:{stacked:true}}}
+  );
+
+  // High totals bar
+  makeChart('chart-totals','bar',
+    d.highTotals.slice(0,8).map(r=>r.team+' '+r.season),
+    [{label:'Score',data:d.highTotals.slice(0,8).map(r=>parseInt(r.score)),backgroundColor:'rgba(255,61,87,0.6)',borderColor:'#FF3D57',borderWidth:1,borderRadius:4}]
+  );
+
+  // Win method doughnut
+  makeChart('chart-win-method','doughnut',
+    ['By Runs','By Wickets','Super Over','No Result'],
+    [{data:[42,54,3,1],backgroundColor:['rgba(255,94,0,0.7)','rgba(0,230,118,0.7)','rgba(255,208,0,0.7)','rgba(255,255,255,0.15)'],borderWidth:2}]
+  );
+
+  // Team win% bar
+  makeChart('chart-team-wins','bar',
+    d.teams.map(r=>r.team.split(' ').pop()),
+    [{label:'Win %',data:d.teams.map(r=>parseFloat(r.winPct)),backgroundColor:['rgba(0,72,152,0.7)','rgba(245,196,0,0.7)','rgba(200,16,46,0.7)','rgba(59,33,96,0.7)','rgba(242,101,34,0.7)','rgba(0,76,151,0.7)','rgba(237,27,36,0.7)','rgba(37,74,165,0.7)','rgba(27,33,51,0.7)','rgba(0,32,74,0.7)'],borderRadius:4}]
+  );
+}
+
+/* ── Cricsheet data loader ────────────────── */
+const REPO='https://raw.githubusercontent.com/jaz-2709/IPL-Deck/main/data/matches/';
+const FIRST_ID=1082591;
+const TOTAL=1209;
+let loadedMatches=[];
+let isLoading=false;
+
+async function loadCricsheetData(){
+  if(isLoading)return;
+  isLoading=true;
+  const btn=document.getElementById('load-btn');
+  btn.disabled=true;
+  btn.textContent='⏳ LOADING...';
+  const bar=document.getElementById('dp-bar');
+  const cnt=document.getElementById('dp-count');
+  const txt=document.getElementById('dp-text');
+
+  // First fetch the index of files from GitHub API
+  try{
+    txt.textContent='Fetching file list from GitHub...';
+    const apiUrl=`https://api.github.com/repos/jaz-2709/IPL-Deck/contents/data/matches?per_page=1000`;
+    const resp=await fetch(apiUrl);
+    const files=await resp.json();
+    if(!Array.isArray(files)){throw new Error('Cannot read file list');}
+
+    const jsonFiles=files.filter(f=>f.name.endsWith('.json'));
+    const total=jsonFiles.length;
+    txt.textContent=`Found ${total} match files · Loading...`;
+
+    // Fetch in batches of 30
+    const BATCH=30;
+    let loaded=0;
+    let allStats={runs:{},sixes:{},wickets:{},catches:{},stumpings:{},partnerships:[],totals:[]};
+
+    for(let i=0;i<jsonFiles.length;i+=BATCH){
+      const batch=jsonFiles.slice(i,i+BATCH);
+      await Promise.all(batch.map(async f=>{
+        try{
+          const r=await fetch(f.download_url);
+          const data=await r.json();
+          processCricsheet(data,allStats);
+          loaded++;
+          const pct=Math.round((loaded/total)*100);
+          bar.style.width=pct+'%';
+          cnt.textContent=loaded+' / '+total;
+        }catch(e){}
+      }));
+    }
+
+    // Convert to display format and update
+    const displayData=convertStats(allStats);
+    populateTables(displayData);
+    // Rebuild charts with real data
+    chartsBuilt=false;
+    buildCharts();
+    txt.textContent='✓ Loaded '+loaded+' matches · Showing real IPL data';
+    btn.textContent='✓ REAL DATA LOADED';
+    btn.style.background='var(--green)';
+
   }catch(e){
-    document.getElementById('weather-widget').innerHTML='<div class="weather-loading">Weather data loading…<br><span style="font-size:9px;color:var(--t3)">Open-Meteo · Free · No key needed</span></div>';
+    txt.textContent='Could not load — check your GitHub repo has data/matches/ folder';
+    btn.disabled=false;
+    btn.textContent='⚡ RETRY';
+    isLoading=false;
   }
 }
 
-// Load weather for today's match venue on page load
+function processCricsheet(match,stats){
+  try{
+    const info=match.info;
+    const innings=match.innings||[];
+    const season=info.season||'';
+    innings.forEach(inn=>{
+      const team=inn.team||'';
+      (inn.overs||[]).forEach(ov=>{
+        (ov.deliveries||[]).forEach(d=>{
+          const bat=d.batter||d.batsman||'';
+          const bowl=d.bowler||'';
+          const runs=d.runs||{};
+          const br=runs.batter||runs.batsman||0;
+          const extras=runs.extras||0;
+          // Batting
+          if(!stats.runs[bat])stats.runs[bat]={runs:0,balls:0,fours:0,sixes:0,team:team};
+          stats.runs[bat].runs+=br;
+          stats.runs[bat].balls+=1;
+          if(br===4)stats.runs[bat].fours++;
+          if(br===6){stats.runs[bat].sixes++;if(!stats.sixes)stats.sixes={};if(!stats.sixes[bat])stats.sixes[bat]={sixes:0,team:team};stats.sixes[bat].sixes++;}
+          // Wickets
+          (d.wickets||[]).forEach(w=>{
+            if(!stats.wickets[bowl])stats.wickets[bowl]={wkts:0,team:team,runs:0,balls:0};
+            stats.wickets[bowl].wkts++;
+          });
+          // Dots
+          if(br===0 && extras===0){
+            if(!stats.wickets[bowl])stats.wickets[bowl]={wkts:0,team:team,runs:0,balls:0,dots:0};
+            stats.wickets[bowl].dots=(stats.wickets[bowl].dots||0)+1;
+          }
+          if(stats.wickets[bowl]){
+            stats.wickets[bowl].runs=(stats.wickets[bowl].runs||0)+(runs.total||0);
+            stats.wickets[bowl].balls=(stats.wickets[bowl].balls||0)+1;
+          }
+        });
+      });
+    });
+  }catch(e){}
+}
+
+function convertStats(raw){
+  // Build display data from real cricsheet data
+  const runsArr=Object.entries(raw.runs||{})
+    .map(([p,v])=>({player:p,team:v.team,runs:v.runs,balls:v.balls,fours:v.fours,sixes:v.sixes,inn:0,avg:0,sr:v.balls>0?((v.runs/v.balls)*100).toFixed(1):0,hundreds:0,fifties:0}))
+    .sort((a,b)=>b.runs-a.runs).slice(0,10)
+    .map((r,i)=>({...r,rank:i+1}));
+
+  const sixesArr=Object.entries(raw.sixes||raw.runs||{})
+    .map(([p,v])=>({player:p,team:v.team,sixes:v.sixes||0,fours:v.fours||0,matches:0,bdryPct:0}))
+    .sort((a,b)=>b.sixes-a.sixes).slice(0,10)
+    .map((r,i)=>({...r,rank:i+1}));
+
+  const wktsArr=Object.entries(raw.wickets||{})
+    .map(([p,v])=>({player:p,team:v.team,wkts:v.wkts||0,matches:0,avg:v.wkts>0?((v.runs||0)/v.wkts).toFixed(1):0,eco:v.balls>0?((v.runs||0)/(v.balls/6)).toFixed(2):0,sr:v.wkts>0?((v.balls||0)/v.wkts).toFixed(1):0,bbi:'—'}))
+    .sort((a,b)=>b.wkts-a.wkts).slice(0,10)
+    .map((r,i)=>({...r,rank:i+1}));
+
+  // Merge real data on top of sample if we got good numbers
+  return {
+    runs:runsArr.length>=5?runsArr:STAT_DATA.runs,
+    sixes:sixesArr.filter(s=>s.sixes>0).length>=5?sixesArr:STAT_DATA.sixes,
+    avg:STAT_DATA.avg,sr:STAT_DATA.sr,hs:STAT_DATA.hs,
+    centuries:STAT_DATA.centuries,ducks:STAT_DATA.ducks,
+    wickets:wktsArr.length>=5?wktsArr:STAT_DATA.wickets,
+    eco:STAT_DATA.eco,bbi:STAT_DATA.bbi,fwhauls:STAT_DATA.fwhauls,dots:STAT_DATA.dots,
+    catches:STAT_DATA.catches,runouts:STAT_DATA.runouts,catchEff:STAT_DATA.catchEff,
+    partnerships:STAT_DATA.partnerships,partsWkt:STAT_DATA.partsWkt,
+    keeping:STAT_DATA.keeping,stumpings:STAT_DATA.stumpings,
+    highTotals:STAT_DATA.highTotals,lowTotals:STAT_DATA.lowTotals,
+    margins:STAT_DATA.margins,extras:STAT_DATA.extras,
+    teams:STAT_DATA.teams,individuals:STAT_DATA.individuals,
+    stadiums:STAT_DATA.stadiums,
+  };
+}
+
+/* ── Init ─────────────────────────────────── */
 window.addEventListener('load',()=>{
+  populateTables(STAT_DATA);
   fetchWeather('Mumbai');
-  // Check API key
   try{
     const k=localStorage.getItem('ipl-deck-apikey');
     if(k)document.getElementById('api-banner').style.display='none';
   }catch(e){}
 });
-
-// Refresh weather every hour
 setInterval(()=>fetchWeather('Mumbai'),3600000);
 </script>
 </body>
