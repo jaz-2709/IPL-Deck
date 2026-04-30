@@ -1067,14 +1067,14 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <!-- Top stat overview cards -->
       <div class="stats-overview-grid">
         <div class="stat-rec-card" style="--clr-a:var(--gold)">
-          <div class="src-label">Orange Cap</div>
+          <div class="src-label">Orange Cap (All Time Top Scorer)</div>
           <div class="src-value" id="s-orange-runs">741</div>
           <div class="src-player" id="s-orange-player">Virat Kohli</div>
           <div class="src-team" id="s-orange-team">Royal Challengers Bengaluru · 2016</div>
           <div class="src-season">🧢</div>
         </div>
         <div class="stat-rec-card" style="--clr-a:var(--orange)">
-          <div class="src-label">Highest Score</div>
+          <div class="src-label">Highest Individual Score</div>
           <div class="src-value" id="s-hi-score">175*</div>
           <div class="src-player" id="s-hi-player">Chris Gayle</div>
           <div class="src-team" id="s-hi-team">Royal Challengers Bengaluru · 2013</div>
@@ -1255,31 +1255,31 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="cat-panel" id="cat-bowling">
       <div class="stats-overview-grid">
         <div class="stat-rec-card" style="--clr-a:var(--purple)">
-          <div class="src-label">Purple Cap</div>
-          <div class="src-value">32</div>
-          <div class="src-player">Harshal Patel</div>
-          <div class="src-team">Royal Challengers Bengaluru · 2021</div>
+          <div class="src-label">Purple Cap (All Time Top Wicket Taker)</div>
+          <div class="src-value" id="s-purple-wkts">187</div>
+          <div class="src-player" id="s-purple-player">Yuzvendra Chahal</div>
+          <div class="src-team" id="s-purple-team">RCB / RR / PBKS</div>
           <div class="src-season">🎳</div>
         </div>
         <div class="stat-rec-card" style="--clr-a:var(--green)">
-          <div class="src-label">Best Economy</div>
-          <div class="src-value">5.83</div>
-          <div class="src-player">Rashid Khan</div>
-          <div class="src-team">Sunrisers Hyderabad</div>
+          <div class="src-label">Best Economy Rate</div>
+          <div class="src-value" id="s-best-eco">5.83</div>
+          <div class="src-player" id="s-best-eco-player">Rashid Khan</div>
+          <div class="src-team" id="s-best-eco-team">Sunrisers Hyderabad</div>
           <div class="src-season">💨</div>
         </div>
         <div class="stat-rec-card" style="--clr-a:var(--red)">
-          <div class="src-label">Best Figures</div>
-          <div class="src-value">6/14</div>
-          <div class="src-player">Sohail Tanvir</div>
-          <div class="src-team">Rajasthan Royals · 2008</div>
+          <div class="src-label">Best Bowling Figures</div>
+          <div class="src-value" id="s-bbi">6/14</div>
+          <div class="src-player" id="s-bbi-player">Sohail Tanvir</div>
+          <div class="src-team" id="s-bbi-team">Rajasthan Royals · 2008</div>
           <div class="src-season">🔥</div>
         </div>
         <div class="stat-rec-card" style="--clr-a:var(--blue)">
-          <div class="src-label">Most Wickets (Career)</div>
-          <div class="src-value">187</div>
-          <div class="src-player">Yuzvendra Chahal</div>
-          <div class="src-team">RCB / RR / PBKS</div>
+          <div class="src-label">Most 4-Wicket Hauls</div>
+          <div class="src-value" id="s-4w">26</div>
+          <div class="src-player" id="s-4w-player">Dwayne Bravo</div>
+          <div class="src-team" id="s-4w-team">Chennai Super Kings</div>
           <div class="src-season">🏆</div>
         </div>
       </div>
@@ -1344,16 +1344,16 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <div class="stats-overview-grid">
         <div class="stat-rec-card" style="--clr-a:var(--green)">
           <div class="src-label">Most Catches (Career)</div>
-          <div class="src-value">122</div>
-          <div class="src-player">Suresh Raina</div>
-          <div class="src-team">Chennai Super Kings</div>
+          <div class="src-value" id="s-most-catches">122</div>
+          <div class="src-player" id="s-most-catches-player">Suresh Raina</div>
+          <div class="src-team" id="s-most-catches-team">Chennai Super Kings</div>
           <div class="src-season">🤾</div>
         </div>
         <div class="stat-rec-card" style="--clr-a:var(--orange)">
           <div class="src-label">Most Run-Outs</div>
-          <div class="src-value">24</div>
-          <div class="src-player">MS Dhoni</div>
-          <div class="src-team">Chennai Super Kings</div>
+          <div class="src-value" id="s-most-runouts">24</div>
+          <div class="src-player" id="s-most-runouts-player">MS Dhoni</div>
+          <div class="src-team" id="s-most-runouts-team">Chennai Super Kings</div>
           <div class="src-season">🏃</div>
         </div>
         <div class="stat-rec-card" style="--clr-a:var(--blue)">
@@ -1470,17 +1470,17 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="cat-panel" id="cat-keeping">
       <div class="stats-overview-grid">
         <div class="stat-rec-card" style="--clr-a:var(--blue)">
-          <div class="src-label">Most Dismissals</div>
-          <div class="src-value">172</div>
-          <div class="src-player">MS Dhoni</div>
-          <div class="src-team">Chennai Super Kings</div>
+          <div class="src-label">Most Dismissals (Career)</div>
+          <div class="src-value" id="s-most-dismissals">172</div>
+          <div class="src-player" id="s-most-dismissals-player">MS Dhoni</div>
+          <div class="src-team" id="s-most-dismissals-team">Chennai Super Kings</div>
           <div class="src-season">🧤</div>
         </div>
         <div class="stat-rec-card" style="--clr-a:var(--green)">
-          <div class="src-label">Most Stumpings</div>
-          <div class="src-value">42</div>
-          <div class="src-player">MS Dhoni</div>
-          <div class="src-team">Chennai Super Kings</div>
+          <div class="src-label">Most Stumpings (Career)</div>
+          <div class="src-value" id="s-most-stumpings">42</div>
+          <div class="src-player" id="s-most-stumpings-player">MS Dhoni</div>
+          <div class="src-team" id="s-most-stumpings-team">Chennai Super Kings</div>
           <div class="src-season">⚡</div>
         </div>
         <div class="stat-rec-card" style="--clr-a:var(--gold)">
@@ -1529,16 +1529,16 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <div class="stats-overview-grid">
         <div class="stat-rec-card" style="--clr-a:var(--orange)">
           <div class="src-label">Highest Team Total</div>
-          <div class="src-value">287/2</div>
-          <div class="src-player">Royal Challengers Bengaluru</div>
-          <div class="src-team">vs PBKS · 2016</div>
+          <div class="src-value" id="s-high-total">287/2</div>
+          <div class="src-player" id="s-high-total-team">Royal Challengers Bengaluru</div>
+          <div class="src-team" id="s-high-total-info">vs PBKS · 2016</div>
           <div class="src-season">🔝</div>
         </div>
         <div class="stat-rec-card" style="--clr-a:var(--red)">
           <div class="src-label">Lowest Team Total</div>
-          <div class="src-value">49</div>
-          <div class="src-player">Rajasthan Royals</div>
-          <div class="src-team">vs KKR · 2009</div>
+          <div class="src-value" id="s-low-total">49</div>
+          <div class="src-player" id="s-low-total-team">Rajasthan Royals</div>
+          <div class="src-team" id="s-low-total-info">vs KKR · 2009</div>
           <div class="src-season">📉</div>
         </div>
         <div class="stat-rec-card" style="--clr-a:var(--gold)">
@@ -2085,19 +2085,144 @@ const STAT_DATA={
 };
 
 /* ── Populate tables ─────────────────────── */
+/* ── Update summary cards from stats.json summary block ── */
+function updateSummaryCardsFromSummary(s){
+  function set(id,val){const el=document.getElementById(id);if(el&&val!=null)el.textContent=val;}
+  if(!s)return;
+  // Batting
+  if(s.topRunScorer){set('s-orange-runs',(s.topRunScorer.runs||0).toLocaleString());set('s-orange-player',s.topRunScorer.player);set('s-orange-team',s.topRunScorer.team);}
+  if(s.highestScore){set('s-hi-score',s.highestScore.score);set('s-hi-player',s.highestScore.player);set('s-hi-team',s.highestScore.team+(s.highestScore.season?' · '+s.highestScore.season:''));}
+  if(s.bestSR){set('s-best-sr',typeof s.bestSR.sr==='number'?s.bestSR.sr.toFixed(2):s.bestSR.sr);set('s-best-sr-player',s.bestSR.player);set('s-best-sr-team',s.bestSR.team);}
+  if(s.mostSixes){set('s-most-sixes',s.mostSixes.sixes);set('s-most-sixes-player',s.mostSixes.player);set('s-most-sixes-team',s.mostSixes.team);}
+  // Bowling
+  if(s.topWktTaker){set('s-purple-wkts',s.topWktTaker.wkts);set('s-purple-player',s.topWktTaker.player);set('s-purple-team',s.topWktTaker.team);}
+  if(s.bestEco){set('s-best-eco',typeof s.bestEco.eco==='number'?s.bestEco.eco.toFixed(2):s.bestEco.eco);set('s-best-eco-player',s.bestEco.player);set('s-best-eco-team',s.bestEco.team);}
+  if(s.bestBBI){set('s-bbi',s.bestBBI.figures);set('s-bbi-player',s.bestBBI.player);set('s-bbi-team',s.bestBBI.team);}
+  if(s.most4W){set('s-4w',s.most4W.fw4);set('s-4w-player',s.most4W.player);set('s-4w-team',s.most4W.team);}
+  // Fielding
+  if(s.mostCatches){set('s-most-catches',s.mostCatches.catches);set('s-most-catches-player',s.mostCatches.player);set('s-most-catches-team',s.mostCatches.team);}
+  if(s.mostRunouts){set('s-most-runouts',s.mostRunouts.runouts);set('s-most-runouts-player',s.mostRunouts.player);set('s-most-runouts-team',s.mostRunouts.team);}
+  // Keeping
+  if(s.mostDismissals){set('s-most-dismissals',s.mostDismissals.total);set('s-most-dismissals-player',s.mostDismissals.player);set('s-most-dismissals-team',s.mostDismissals.team);}
+  if(s.mostStumpings){set('s-most-stumpings',s.mostStumpings.stumpings);set('s-most-stumpings-player',s.mostStumpings.player);set('s-most-stumpings-team',s.mostStumpings.team);}
+  // Match
+  if(s.highestTotal){set('s-high-total',s.highestTotal.score);set('s-high-total-team',s.highestTotal.team);set('s-high-total-info',(s.highestTotal.vs&&s.highestTotal.vs!=='—'?'vs '+s.highestTotal.vs+' · ':'')+s.highestTotal.season);}
+  if(s.lowestTotal){set('s-low-total',s.lowestTotal.score);set('s-low-total-team',s.lowestTotal.team);set('s-low-total-info',(s.lowestTotal.vs&&s.lowestTotal.vs!=='—'?'vs '+s.lowestTotal.vs+' · ':'')+s.lowestTotal.season);}
+}
+
+/* ── Update all summary stat cards with real data ── */
+function updateSummaryCards(d){
+  function set(id,val){const el=document.getElementById(id);if(el&&val!==undefined&&val!==null)el.textContent=val;}
+
+  // Batting cards
+  if(d.runs&&d.runs.length){
+    const top=d.runs[0];
+    set('s-orange-runs', top.runs?.toLocaleString());
+    set('s-orange-player', top.player);
+    set('s-orange-team', top.team);
+  }
+  if(d.hs&&d.hs.length){
+    const top=d.hs[0];
+    set('s-hi-score', top.score);
+    set('s-hi-player', top.player);
+    set('s-hi-team', top.team+(top.season?' · '+top.season:''));
+  }
+  if(d.sr&&d.sr.length){
+    const top=d.sr[0];
+    set('s-best-sr', typeof top.sr==='number'?top.sr.toFixed(2):top.sr);
+    set('s-best-sr-player', top.player);
+    set('s-best-sr-team', top.team);
+  }
+  if(d.sixes&&d.sixes.length){
+    const top=d.sixes[0];
+    set('s-most-sixes', top.sixes);
+    set('s-most-sixes-player', top.player);
+    set('s-most-sixes-team', top.team);
+  }
+
+  // Bowling cards
+  if(d.wickets&&d.wickets.length){
+    const top=d.wickets[0];
+    set('s-purple-wkts', top.wkts);
+    set('s-purple-player', top.player);
+    set('s-purple-team', top.team);
+  }
+  if(d.eco&&d.eco.length){
+    const top=d.eco[0];
+    set('s-best-eco', typeof top.eco==='number'?top.eco.toFixed(2):top.eco);
+    set('s-best-eco-player', top.player);
+    set('s-best-eco-team', top.team);
+  }
+  if(d.bbi&&d.bbi.length){
+    const top=d.bbi[0];
+    set('s-bbi', top.figures||top.bbi);
+    set('s-bbi-player', top.player);
+    set('s-bbi-team', top.team+(top.season?' · '+top.season:''));
+  }
+  if(d.fwhauls&&d.fwhauls.length){
+    const top=d.fwhauls[0];
+    set('s-4w', top.fw4);
+    set('s-4w-player', top.player);
+    set('s-4w-team', top.team);
+  }
+
+  // Fielding cards
+  if(d.catches&&d.catches.length){
+    const top=d.catches[0];
+    set('s-most-catches', top.catches);
+    set('s-most-catches-player', top.player);
+    set('s-most-catches-team', top.team);
+  }
+  if(d.runouts&&d.runouts.length){
+    const top=d.runouts[0];
+    set('s-most-runouts', top.runouts);
+    set('s-most-runouts-player', top.player);
+    set('s-most-runouts-team', top.team);
+  }
+
+  // Keeping cards
+  if(d.keeping&&d.keeping.length){
+    const top=d.keeping[0];
+    set('s-most-dismissals', top.total);
+    set('s-most-dismissals-player', top.player);
+    set('s-most-dismissals-team', top.team);
+  }
+  if(d.stumpings&&d.stumpings.length){
+    const top=d.stumpings[0];
+    set('s-most-stumpings', top.stumpings);
+    set('s-most-stumpings-player', top.player);
+    set('s-most-stumpings-team', top.team);
+  }
+
+  // Match records cards
+  if(d.highTotals&&d.highTotals.length){
+    const top=d.highTotals[0];
+    set('s-high-total', top.score);
+    set('s-high-total-team', top.team);
+    set('s-high-total-info', (top.vs&&top.vs!=='—'?'vs '+top.vs+' · ':'')+top.season);
+  }
+  if(d.lowTotals&&d.lowTotals.length){
+    const top=d.lowTotals[0];
+    set('s-low-total', top.score);
+    set('s-low-total-team', top.team);
+    set('s-low-total-info', (top.vs&&top.vs!=='—'?'vs '+top.vs+' · ':'')+top.season);
+  }
+}
+
 function populateTables(d){
+  updateSummaryCards(d);
   // Runs leaderboard
   const rb=document.getElementById('lb-runs-body');
-  if(rb)rb.innerHTML=d.runs.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.inn),bigVal(r.runs.toLocaleString()),mono(r.avg.toFixed(2)),mono(r.sr.toFixed(1)),mono(r.hundreds),mono(r.fifties)])).join('');
+  if(rb)rb.innerHTML=d.runs.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.inn),bigVal((r.runs||0).toLocaleString()),mono(sf(r.avg,2)),mono(sf(r.sr,1)),mono(r.hundreds),mono(r.fifties)])).join('');
   // Sixes
   const sb=document.getElementById('lb-sixes-body');
   if(sb)sb.innerHTML=d.sixes.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.matches),bigVal(r.sixes),mono(r.fours),mono(r.bdryPct+'%')])).join('');
   // Average
   const ab=document.getElementById('lb-avg-body');
-  if(ab)ab.innerHTML=d.avg.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.inn),mono(r.runs.toLocaleString()),mono(r.no),bigVal(r.avg.toFixed(2)),mono(r.hs)])).join('');
+  if(ab)ab.innerHTML=d.avg.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.inn),mono((r.runs||0).toLocaleString()),mono(r.no),bigVal(sf(r.avg,2)),mono(r.hs)])).join('');
   // SR
   const srb=document.getElementById('lb-sr-body');
-  if(srb)srb.innerHTML=d.sr.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.balls),mono(r.runs),bigVal(r.sr.toFixed(2)),mono(r.sixes)])).join('');
+  if(srb)srb.innerHTML=d.sr.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.balls),mono(r.runs),bigVal(sf(r.sr,2)),mono(r.sixes)])).join('');
   // HS
   const hsb=document.getElementById('lb-hs-body');
   if(hsb)hsb.innerHTML=d.hs.map((r,i)=>row([rankCell(i+1),playerCell(r.player,''),bigVal(r.score),mono(r.balls),mono(r.fours),mono(r.sixes),`<td style="font-family:var(--f-mono);font-size:11px;color:var(--t3)">${r.vs}</td>`,`<td style="font-family:var(--f-mono);font-size:11px;color:var(--t3)">${r.season}</td>`],true)).join('');
@@ -2109,13 +2234,13 @@ function populateTables(d){
   if(db)db.innerHTML=d.ducks.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),bigVal(r.ducks),mono(r.inn),mono(r.pct)])).join('');
   // Wickets
   const wb=document.getElementById('lb-wickets-body');
-  if(wb)wb.innerHTML=d.wickets.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.matches),bigVal(r.wkts),mono(r.avg.toFixed(1)),mono(r.eco.toFixed(2)),mono(r.sr.toFixed(1)),mono(r.bbi)])).join('');
+  if(wb)wb.innerHTML=d.wickets.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.matches),bigVal(r.wkts),mono(sf(r.avg,1)),mono(sf(r.eco,2)),mono(sf(r.sr,1)),mono(r.bbi)])).join('');
   // Eco
   const eb=document.getElementById('lb-eco-body');
-  if(eb)eb.innerHTML=d.eco.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.overs),mono(r.runs),mono(r.wkts),bigVal(r.eco.toFixed(2))])).join('');
+  if(eb)eb.innerHTML=d.eco.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),mono(r.overs),mono(r.runs),mono(r.wkts),bigVal(sf(r.eco,2))])).join('');
   // BBI
   const bb=document.getElementById('lb-bbi-body');
-  if(bb)bb.innerHTML=d.bbi.map((r,i)=>row([rankCell(i+1),playerCell(r.player,''),bigVal(r.figures),mono(r.eco.toFixed(2)),`<td style="font-family:var(--f-mono);font-size:11px;color:var(--t3)">${r.vs}</td>`,`<td style="font-family:var(--f-mono);font-size:11px;color:var(--t3)">${r.season}</td>`],true)).join('');
+  if(bb)bb.innerHTML=d.bbi.map((r,i)=>row([rankCell(i+1),playerCell(r.player,''),bigVal(r.figures||r.bbi||'—'),mono(sf(r.eco,2)),`<td style="font-family:var(--f-mono);font-size:11px;color:var(--t3)">${r.vs||'—'}</td>`,`<td style="font-family:var(--f-mono);font-size:11px;color:var(--t3)">${r.season||'—'}</td>`],true)).join('');
   // 4W hauls
   const fw=document.getElementById('lb-4w-body');
   if(fw)fw.innerHTML=d.fwhauls.map((r,i)=>row([rankCell(i+1),playerCell(r.player,r.team),bigVal(r.fw4),mono(r.fw5),mono(r.wkts)])).join('');
@@ -2370,6 +2495,10 @@ async function loadCricsheetData(){
       if(data&&data.runs&&data.runs.length>0){
         // Merge with sample data for categories not in stats.json
         const merged={...STAT_DATA,...data};
+        // If stats.json has summary block, use it to update top cards
+        if(data.summary){
+          updateSummaryCardsFromSummary(data.summary);
+        }
         populateTables(merged);
         buildCharts();
         setBar(100);
